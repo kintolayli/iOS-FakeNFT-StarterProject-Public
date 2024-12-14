@@ -5,25 +5,25 @@ final class TabBarController: UITabBarController {
     var servicesAssembly: ServicesAssembly!
 
     private let profileTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.profile", comment: ""),
+        title: L10n.Tab.profile,
         image: UIImage(named: "ProfileTabBarItemImage"),
         tag: 0
     )
 
     private let catalogTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.catalog", comment: ""),
+        title: L10n.Tab.catalog,
         image: UIImage(named: "CatalogTabBarItemImage"),
         tag: 0
     )
 
     private let cartTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.cart", comment: ""),
+        title: L10n.Tab.cart,
         image: UIImage(named: "CartTabBarItemImage"),
         tag: 0
     )
 
     private let statisticsTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.statistics", comment: ""),
+        title: L10n.Tab.statistics,
         image: UIImage(named: "StatisticsTabBarItemImage"),
         tag: 0
     )
