@@ -25,3 +25,9 @@ final class CartService {
         return items.contains(where: {$0.nftId == id})
     }
 }
+
+extension CartService {
+    func mockCart() {
+        items = CartMocks.mockCart
+    }
+}
