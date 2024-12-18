@@ -21,7 +21,7 @@ final class CartTableViewCell: UITableViewCell {
             nftPriceLabel.text = "\(item?.price ?? 0) ETH"
             nftImageView.kf.setImage(with: URL(string: item?.imageUrl ?? ""))
             setNftRating(stackView: starsStackView, rating: item?.rating ?? 0)
-            
+        
         }
     }
     
