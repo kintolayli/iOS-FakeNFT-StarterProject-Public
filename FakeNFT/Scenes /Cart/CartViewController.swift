@@ -12,6 +12,8 @@ class CartViewController: UIViewController {
     private let itemCounterLabel = UILabel()
     private let proceedPaymentButton = UIButton()
     
+    private let plugLabel = UILabel()
+    
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
@@ -29,7 +31,8 @@ class CartViewController: UIViewController {
         setupNavigationItem()
         setupOrderDetailsView()
         setupCartTableView()
-        
+        setupPlugLabel()
+        updatePlugLabelVisibility()
     }
     
     private func setupNavigationItem() {
@@ -38,6 +41,28 @@ class CartViewController: UIViewController {
         sortButton.tintColor = UIColor(resource: .ypBlack)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
         
+    }
+    
+    private func updatePlugLabelVisibility() {
+        cartTableView.isHidden = cartService.items.isEmpty
+        plugLabel.isHidden = !cartService.items.isEmpty
+    }
+    
+    private func setupPlugLabel() {
+        plugLabel.text = "Корзина пуста"
+        plugLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        plugLabel.textColor = UIColor(resource: .ypBlack)
+        plugLabel.textAlignment = .center
+        
+        plugLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(plugLabel)
+        
+        NSLayoutConstraint.activate([
+            plugLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            plugLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            plugLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        ])
     }
     
     private func setupCartTableView() {
@@ -150,5 +175,6 @@ extension CartViewController: CartTableViewCellDelegate {
         cartService.removeItemByNftId(nftId)
         updateOrderDetails()
         cartTableView.reloadData()
+        updatePlugLabelVisibility()
     }
 }
