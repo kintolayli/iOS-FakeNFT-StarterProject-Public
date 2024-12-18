@@ -21,7 +21,6 @@ final class CartTableViewCell: UITableViewCell {
             nftPriceLabel.text = "\(item?.price ?? 0) ETH"
             nftImageView.kf.setImage(with: URL(string: item?.imageUrl ?? ""))
             setNftRating(stackView: starsStackView, rating: item?.rating ?? 0)
-        
         }
     }
     
@@ -113,10 +112,7 @@ final class CartTableViewCell: UITableViewCell {
         for _ in 0...5 {
             starsStackView.addArrangedSubview(UIImageView(image: UIImage(resource: .star)))
         }
-        
-        setNftRating(stackView: starsStackView, rating: 2)
-
-        
+    
         nftTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         nftInfoStackView.translatesAutoresizingMaskIntoConstraints = false
         starsStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +131,6 @@ final class CartTableViewCell: UITableViewCell {
         let removeImage = UIImage(resource: .cartDelete)
         removeButton.setImage(removeImage, for: .normal)
         removeButton.tintColor = UIColor(resource: .ypBlack)
-        
         removeButton.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
         
         removeButton.translatesAutoresizingMaskIntoConstraints = false

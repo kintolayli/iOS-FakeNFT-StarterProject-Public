@@ -79,12 +79,22 @@ class CartViewController: UIViewController {
         itemCounterLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         itemCounterLabel.textColor = UIColor(resource: .ypBlack)
         
+        proceedPaymentButton.setTitle("К оплате", for: .normal)
+        proceedPaymentButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        proceedPaymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        proceedPaymentButton.backgroundColor = UIColor(resource: .ypBlack)
+        proceedPaymentButton.layer.cornerRadius = 16
+        proceedPaymentButton.clipsToBounds = true
+        proceedPaymentButton.addTarget(self, action: #selector(didTapProceedPaymentButtonButton), for: .touchUpInside)
+
         orderDatailsView.translatesAutoresizingMaskIntoConstraints = false
         totalCostLabel.translatesAutoresizingMaskIntoConstraints = false
         itemCounterLabel.translatesAutoresizingMaskIntoConstraints = false
+        proceedPaymentButton.translatesAutoresizingMaskIntoConstraints = false
         
         orderDatailsView.addSubview(totalCostLabel)
         orderDatailsView.addSubview(itemCounterLabel)
+        orderDatailsView.addSubview(proceedPaymentButton)
         view.addSubview(orderDatailsView)
         
         NSLayoutConstraint.activate([
@@ -95,14 +105,25 @@ class CartViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            itemCounterLabel.leadingAnchor.constraint(equalTo: orderDatailsView.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            itemCounterLabel.topAnchor.constraint(equalTo: orderDatailsView.safeAreaLayoutGuide.topAnchor, constant: 16)
+            itemCounterLabel.topAnchor.constraint(equalTo: orderDatailsView.topAnchor, constant: 16),
+            itemCounterLabel.leadingAnchor.constraint(equalTo: orderDatailsView.leadingAnchor, constant: 16),
         ])
         
         NSLayoutConstraint.activate([
-            totalCostLabel.leadingAnchor.constraint(equalTo: orderDatailsView.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            totalCostLabel.bottomAnchor.constraint(equalTo: orderDatailsView.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            totalCostLabel.leadingAnchor.constraint(equalTo: orderDatailsView.leadingAnchor, constant: 16),
+            totalCostLabel.bottomAnchor.constraint(equalTo: orderDatailsView.bottomAnchor, constant: -16)
         ])
+        
+        NSLayoutConstraint.activate([
+            proceedPaymentButton.widthAnchor.constraint(equalToConstant: 240),
+            proceedPaymentButton.topAnchor.constraint(equalTo: orderDatailsView.topAnchor, constant: 16),
+            proceedPaymentButton.bottomAnchor.constraint(equalTo: orderDatailsView.bottomAnchor, constant: -16),
+            proceedPaymentButton.trailingAnchor.constraint(equalTo: orderDatailsView.trailingAnchor, constant: -16),
+        ])
+    }
+    
+    @objc
+    private func didTapProceedPaymentButtonButton() {
     }
 }
 
