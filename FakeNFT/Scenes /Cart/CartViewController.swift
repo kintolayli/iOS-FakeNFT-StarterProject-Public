@@ -10,6 +10,7 @@ class CartViewController: UIViewController {
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
+        view.backgroundColor = UIColor(resource: .ypWhite)
     }
 
     required init?(coder: NSCoder) {
@@ -18,12 +19,10 @@ class CartViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         cartService.mockCart()
         setupNavigationItem()
         setupCartTableView()
-        
-        
-        view.backgroundColor = .green
     }
     
     func setupNavigationItem() {
@@ -31,6 +30,7 @@ class CartViewController: UIViewController {
         sortButton.setImage(UIImage(resource: .sort), for: .normal)
         sortButton.tintColor = UIColor(resource: .ypBlack)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
+        
     }
     
     private func setupCartTableView() {
@@ -42,13 +42,16 @@ class CartViewController: UIViewController {
         
         cartTableView.allowsSelection = false
         cartTableView.separatorStyle = .none
+        cartTableView.rowHeight = 140
+        
+        cartTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
 
         cartTableView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(cartTableView)
         
         NSLayoutConstraint.activate([
-            cartTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            cartTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             cartTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cartTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             cartTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -66,6 +69,17 @@ extension CartViewController: UITableViewDataSource {
         else {
             return CartTableViewCell()
         }
+        
+        cell.item = cartService.items[indexPath.row]
+        cell.delegate = self
+        
         return cell
+    }
+}
+
+extension CartViewController: CartTableViewCellDelegate {
+    func removeItem(_ nftId: String) {
+        cartService.removeItemByNftId(nftId)
+        cartTableView.reloadData()
     }
 }

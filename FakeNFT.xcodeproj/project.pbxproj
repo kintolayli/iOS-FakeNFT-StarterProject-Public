@@ -408,8 +408,8 @@
 		8AF91C462D0B6DE7006448B8 /* Cart */ = {
 			isa = PBXGroup;
 			children = (
-				43AA393E2D11852300597CCC /* CartTableViewCell.swift */,
 				43AA38D92D1179D600597CCC /* CartMocks.swift */,
+				43AA393E2D11852300597CCC /* CartTableViewCell.swift */,
 				8AF91C472D0B6DFF006448B8 /* CartViewController.swift */,
 			);
 			path = Cart;

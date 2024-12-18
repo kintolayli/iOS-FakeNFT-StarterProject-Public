@@ -28,6 +28,6 @@ final class CartService {
 
 extension CartService {
     func mockCart() {
-        items = CartMocks.mockCart
+        items = CartMocks.mockCart + CartMocks.mockCart
     }
 }
