@@ -149,6 +149,8 @@ class CartViewController: UIViewController {
     
     @objc
     private func didTapProceedPaymentButtonButton() {
+        let paymentViewController = PaymentViewController(servicesAssembly: servicesAssembly)
+        navigationController?.pushViewController(paymentViewController, animated: true)
     }
 }
 
