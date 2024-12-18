@@ -79,15 +79,15 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func didTapMyNft() {
-        if let profile {
-            router.navigateToMyNFT(profile)
-        }
+       // if let profile {
+         //   router.navigateToMyNFT(profile)
+        //}
     }
 
     func didTapSelectedNft() {
-        if let profile {
-            router.navigateToSelectedNFT(profile.likes)
-        }
+       // if let profile {
+        //    router.navigateToSelectedNFT(profile.likes)
+        //}
     }
 
     func didTapWebsite() {
@@ -97,7 +97,7 @@ extension ProfilePresenter: ProfilePresenterProtocol {
     }
 
     func didTapAboutDev() {
-        router.navigateToAboutTheDeveloper()
+        //router.navigateToAboutTheDeveloper()
     }
 
     func updateUserProfile(_ profile: Profile?) {
