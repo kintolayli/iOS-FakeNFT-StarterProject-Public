@@ -111,7 +111,7 @@ final class CartRemovingViewController: UIViewController {
         buttonsStackView.spacing = 8
         buttonsStackView.distribution = .fillEqually
         
-        deleteButton.setTitle("Удалить", for: .normal)
+        deleteButton.setTitle(L10n.Cart.delete, for: .normal)
         deleteButton.setTitleColor(UIColor(resource: .yRed), for: .normal)
         deleteButton.backgroundColor = UIColor(resource: .ypBlack)
         deleteButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -119,7 +119,7 @@ final class CartRemovingViewController: UIViewController {
         deleteButton.clipsToBounds = true
         deleteButton.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         
-        returnButton.setTitle("Вернутся", for: .normal)
+        returnButton.setTitle(L10n.Cart.return, for: .normal)
         returnButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         returnButton.backgroundColor = UIColor(resource: .ypBlack)
         returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)

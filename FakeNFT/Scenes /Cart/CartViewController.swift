@@ -48,7 +48,7 @@ class CartViewController: UIViewController {
     }
     
     private func setupPlugLabel() {
-        plugLabel.text = "Корзина пуста"
+        plugLabel.text = L10n.Cart.plug
         plugLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         plugLabel.textColor = UIColor(resource: .ypBlack)
         plugLabel.textAlignment = .center
@@ -87,7 +87,7 @@ class CartViewController: UIViewController {
     
     private func updateOrderDetails() {
         let totalCost = cartService.items.map({$0.price}).reduce(.zero, +)
-        totalCostLabel.text = "\(totalCost) ETH"
+        totalCostLabel.text = String(format: "%.2f ETH", totalCost)
         itemCounterLabel.text = "\(cartService.items.count) NFT"
     }
     
@@ -95,7 +95,8 @@ class CartViewController: UIViewController {
         orderDatailsView.backgroundColor = UIColor(resource: .ypLightGrey)
         
         let totalCost = cartService.items.map({$0.price}).reduce(.zero, +)
-        totalCostLabel.text = "\(totalCost) ETH"
+        totalCostLabel.text = String(format: "%.2f ETH", totalCost)
+        
         totalCostLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         totalCostLabel.textColor = UIColor(resource: .ypGreen)
         
@@ -103,7 +104,7 @@ class CartViewController: UIViewController {
         itemCounterLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         itemCounterLabel.textColor = UIColor(resource: .ypBlack)
         
-        proceedPaymentButton.setTitle("К оплате", for: .normal)
+        proceedPaymentButton.setTitle(L10n.Cart.payment, for: .normal)
         proceedPaymentButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         proceedPaymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         proceedPaymentButton.backgroundColor = UIColor(resource: .ypBlack)
