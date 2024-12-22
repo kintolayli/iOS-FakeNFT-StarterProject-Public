@@ -6,7 +6,7 @@
 //
 
 protocol CartTableViewCellDelegate: AnyObject {
-    func removeItem(_ nftId: String)
+    func removeItem(_ item: CartItem)
 }
 
 import UIKit
@@ -145,8 +145,7 @@ final class CartTableViewCell: UITableViewCell {
     
     @objc
     private func didTapRemoveButton() {
-        delegate?.removeItem(item?.nftId ?? "")
+        guard let item else { return }
+        delegate?.removeItem(item)
     }
 }
-
-

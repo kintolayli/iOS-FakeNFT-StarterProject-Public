@@ -138,6 +138,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		430683592D132C32000C8C4A /* CartItemRemoving */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CartItemRemoving; sourceTree = "<group>"; };
 		4306835D2D1332E7000C8C4A /* Payment */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Payment; sourceTree = "<group>"; };
 		43AA38C22D1175CF00597CCC /* Docs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Docs; sourceTree = "<group>"; };
 		43FB21842D0F208A004DAD8C /* Cart */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cart; sourceTree = "<group>"; };
@@ -410,6 +411,7 @@
 			isa = PBXGroup;
 			children = (
 				4306835D2D1332E7000C8C4A /* Payment */,
+				430683592D132C32000C8C4A /* CartItemRemoving */,
 				43AA38D92D1179D600597CCC /* CartMocks.swift */,
 				43AA393E2D11852300597CCC /* CartTableViewCell.swift */,
 				8AF91C472D0B6DFF006448B8 /* CartViewController.swift */,
@@ -481,6 +483,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				430683592D132C32000C8C4A /* CartItemRemoving */,
 				4306835D2D1332E7000C8C4A /* Payment */,
 				43AA38C22D1175CF00597CCC /* Docs */,
 				43FB21842D0F208A004DAD8C /* Cart */,
