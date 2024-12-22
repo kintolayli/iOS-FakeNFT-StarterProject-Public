@@ -145,5 +145,6 @@ final class CartRemovingViewController: UIViewController {
     
     @objc
     private func didTapReturnButton() {
+        dismiss(animated: true)
     }
 }
