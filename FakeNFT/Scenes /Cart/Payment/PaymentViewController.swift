@@ -8,12 +8,8 @@
 import UIKit
 
 final class PaymentViewController: UIViewController {
-    private let servicesAssembly: ServicesAssembly
-
-    init(servicesAssembly: ServicesAssembly) {
-        self.servicesAssembly = servicesAssembly
+    init() {
         super.init(nibName: nil, bundle: nil)
-        
         view.backgroundColor = UIColor(resource: .ypWhite)
     }
     

@@ -39,9 +39,8 @@ final class TabBarController: UITabBarController {
             servicesAssembly: servicesAssembly
         )
 
-        let cartController = CartViewController(
-            servicesAssembly: servicesAssembly
-        )
+        let cartPresenter = CartPresenter(cartService: CartService.shared)
+        let cartController = CartViewController(presenter: cartPresenter)
 
         let statisticsController = TestStatisticsViewController(
             servicesAssembly: servicesAssembly

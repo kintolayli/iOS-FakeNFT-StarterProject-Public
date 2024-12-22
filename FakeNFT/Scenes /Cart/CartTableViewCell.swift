@@ -35,7 +35,9 @@ final class CartTableViewCell: UITableViewCell {
     private let nftInfoStackView = UIStackView()
     private let starsStackView = UIStackView()
     
-    required init?(coder: NSCoder) {fatalError("init(coder:) has not been implemented")}
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -49,7 +51,6 @@ final class CartTableViewCell: UITableViewCell {
     func setupNftImageView() {
         nftImageView.kf.indicatorType = .activity
         nftImageView.kf.setImage(with: URL(string: item?.imageUrl ?? ""))
-        
         nftImageView.layer.cornerRadius = 12
         nftImageView.clipsToBounds = true
         

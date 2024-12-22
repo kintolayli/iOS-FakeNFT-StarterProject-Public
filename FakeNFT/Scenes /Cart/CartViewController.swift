@@ -1,21 +1,19 @@
 import UIKit
 
 class CartViewController: UIViewController {
-    private let servicesAssembly: ServicesAssembly
-    private let cartService = CartService.shared
-    
+    private var presenter: CartPresenter
     private let cartTableView = UITableView(frame: .zero, style: .plain)
     
     private let orderDatailsView = UIView()
     private let totalCostLabel = UILabel()
     private let itemCounterLabel = UILabel()
     private let proceedPaymentButton = UIButton()
-    
     private let plugLabel = UILabel()
-        
-    init(servicesAssembly: ServicesAssembly) {
-        self.servicesAssembly = servicesAssembly
+    
+    init(presenter: CartPresenter) {
+        self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
+        presenter.viewController = self
         view.backgroundColor = UIColor(resource: .ypWhite)
     }
 
@@ -25,8 +23,8 @@ class CartViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.viewDidLoad()
         
-        cartService.mockCart()
         setupNavigationItem()
         setupOrderDetailsView()
         setupCartTableView()
@@ -43,8 +41,8 @@ class CartViewController: UIViewController {
     }
     
     private func updatePlugLabelVisibility() {
-        cartTableView.isHidden = cartService.items.isEmpty
-        plugLabel.isHidden = !cartService.items.isEmpty
+        cartTableView.isHidden = presenter.items.isEmpty
+        plugLabel.isHidden = !presenter.items.isEmpty
     }
     
     private func setupPlugLabel() {
@@ -85,22 +83,17 @@ class CartViewController: UIViewController {
         ])
     }
     
-    private func updateOrderDetails() {
-        let totalCost = cartService.items.map({$0.price}).reduce(.zero, +)
+    func updateOrderDetails(totalCost: Float, itemsCount: Int) {
         totalCostLabel.text = String(format: "%.2f ETH", totalCost)
-        itemCounterLabel.text = "\(cartService.items.count) NFT"
+        itemCounterLabel.text = "\(itemsCount) NFT"
     }
     
     private func setupOrderDetailsView() {
         orderDatailsView.backgroundColor = UIColor(resource: .ypLightGrey)
-        
-        let totalCost = cartService.items.map({$0.price}).reduce(.zero, +)
-        totalCostLabel.text = String(format: "%.2f ETH", totalCost)
-        
+                
         totalCostLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         totalCostLabel.textColor = UIColor(resource: .ypGreen)
         
-        itemCounterLabel.text = "\(cartService.items.count) NFT"
         itemCounterLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         itemCounterLabel.textColor = UIColor(resource: .ypBlack)
         
@@ -149,14 +142,14 @@ class CartViewController: UIViewController {
     
     @objc
     private func didTapProceedPaymentButtonButton() {
-        let paymentViewController = PaymentViewController(servicesAssembly: servicesAssembly)
+        let paymentViewController = PaymentViewController()
         navigationController?.pushViewController(paymentViewController, animated: true)
     }
 }
 
 extension CartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cartService.items.count
+        return presenter.items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -164,7 +157,7 @@ extension CartViewController: UITableViewDataSource {
         else {
             return CartTableViewCell()
         }
-        cell.item = cartService.items[indexPath.row]
+        cell.item = presenter.items[indexPath.row]
         cell.delegate = self
         
         return cell
@@ -183,8 +176,7 @@ extension CartViewController: CartTableViewCellDelegate {
 
 extension CartViewController: CartRemovingViewControllerDelegate {
     func removeItem(nftId: String) {
-        cartService.removeItemByNftId(nftId)
-        updateOrderDetails()
+        presenter.removeItemByNftId(nftId: nftId)
         cartTableView.reloadData()
         updatePlugLabelVisibility()
     }
