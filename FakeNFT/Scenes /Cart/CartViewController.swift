@@ -12,9 +12,7 @@ class CartViewController: UIViewController {
     private let proceedPaymentButton = UIButton()
     
     private let plugLabel = UILabel()
-    
-//    private let cartItemRemovingView = CartItemRemovingView()
-    
+        
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
@@ -165,7 +163,6 @@ extension CartViewController: UITableViewDataSource {
         else {
             return CartTableViewCell()
         }
-        
         cell.item = cartService.items[indexPath.row]
         cell.delegate = self
         
@@ -177,10 +174,15 @@ extension CartViewController: CartTableViewCellDelegate {
     func removeItem(_ item: CartItem) {
         let removingViewController = CartRemovingViewController()
         removingViewController.item = item
-        
+        removingViewController.delegate = self
         removingViewController.modalPresentationStyle = .overFullScreen
         present(removingViewController, animated: true)
-        
+    }
+}
+
+extension CartViewController: CartRemovingViewControllerDelegate {
+    func removeItem(nftId: String) {
+        cartService.removeItemByNftId(nftId)
         updateOrderDetails()
         cartTableView.reloadData()
         updatePlugLabelVisibility()

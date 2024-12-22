@@ -1,6 +1,12 @@
 import UIKit
 
+protocol CartRemovingViewControllerDelegate: AnyObject {
+    func removeItem(nftId: String)
+}
+
 final class CartRemovingViewController: UIViewController {
+    weak var delegate: CartRemovingViewControllerDelegate?
+    
     var item: CartItem? {
         didSet {
             nftImageView.kf.setImage(with: URL(string: item?.imageUrl ?? ""))
@@ -32,7 +38,6 @@ final class CartRemovingViewController: UIViewController {
         setupNftImageView()
         setupDeleteConfirmationLabel()
         setupButtonsStackView()
-
     }
     
     private func setupBluredView() {
@@ -141,6 +146,8 @@ final class CartRemovingViewController: UIViewController {
     
     @objc
     private func didTapDeleteButton() {
+        delegate?.removeItem(nftId: item?.nftId ?? "")
+        dismiss(animated: true)
     }
     
     @objc
