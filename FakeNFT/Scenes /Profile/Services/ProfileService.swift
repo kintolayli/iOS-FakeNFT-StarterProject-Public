@@ -62,38 +62,20 @@ final class ProfileServiceImpl: ProfileService {
     ) {
         syncQueue.async { [weak self] in
             guard let self else { return }
-
-            // Unwrap optional values or provide defaults
-            let unwrappedName = name ?? "Unknown Name"
-            let unwrappedAvatar = avatar ?? "default_avatar_url"
-            let unwrappedDescription = description ?? "No description"
-            let unwrappedWebsite = website ?? "https://default.website"
-            let unwrappedLikes = likes ?? []
-
             let dto = UpdateProfileDto(
-                name: unwrappedName,
-                avatar: unwrappedAvatar,
-                description: unwrappedDescription,
-                website: unwrappedWebsite,
-                likes: unwrappedLikes
+                name: name,
+                avatar: avatar,
+                description: description,
+                website: website,
+                likes: likes
             )
-
             let request = UpdateProfileRequest(dto: dto)
 
             self.networkClient.send(request: request) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success:
-                        // Adjust parameter order to match Profile initializer
-                        completion(.success(Profile(
-                            name: unwrappedName,
-                            avatar: unwrappedAvatar,
-                            description: unwrappedDescription,
-                            website: unwrappedWebsite,
-                            nfts: [], // Default empty NFTs
-                            likes: unwrappedLikes,
-                            id: "default_id" // Default ID
-                        )))
+                        self.getProfile(completion: completion)
                     case .failure(let error):
                         let customError = self.handleNetworkError(error)
                         completion(.failure(customError))
