@@ -44,7 +44,6 @@
 		3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8C39229D246BA0081F015 /* DateFormatters+Presets.swift */; };
 		558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558E39E62C68CE0900FB86AC /* NftService.swift */; };
 		60ED9763CE34E87E867E6555 /* Pods_FakeNFT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AC154B8566CB76276E119CB /* Pods_FakeNFT.framework */; };
-		84FF0BC32D131F4900EF9ACC /* BaurasDecompositionProfil.md in Resources */ = {isa = PBXBuildFile; fileRef = 84FF0BC22D131F4900EF9ACC /* BaurasDecompositionProfil.md */; };
 		84FF0BC52D13219B00EF9ACC /* UserProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF0BC42D13219B00EF9ACC /* UserProfileImageView.swift */; };
 		84FF0BC92D13225B00EF9ACC /* UserPicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF0BC82D13225B00EF9ACC /* UserPicCell.swift */; };
 		84FF0BCC2D13230500EF9ACC /* UpdateProfileDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF0BCB2D13230500EF9ACC /* UpdateProfileDto.swift */; };
@@ -83,6 +82,7 @@
 		84FF0C4D2D1367A900EF9ACC /* NFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF0C4C2D1367A900EF9ACC /* NFT.swift */; };
 		84FF0C672D136BB100EF9ACC /* Statistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF0C662D136BB100EF9ACC /* Statistic.swift */; };
 		84FF0CA22D14489B00EF9ACC /* MyNftHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FF0CA12D14489B00EF9ACC /* MyNftHelper.swift */; };
+		84FF0D122D19C13800EF9ACC /* BaurasDecompositionProfil.md in Resources */ = {isa = PBXBuildFile; fileRef = 84FF0D112D19C13800EF9ACC /* BaurasDecompositionProfil.md */; };
 		8AF91C482D0B6DFF006448B8 /* TestCartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF91C472D0B6DFF006448B8 /* TestCartViewController.swift */; };
 		8AF91C4B2D0B6E38006448B8 /* TestStatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF91C4A2D0B6E38006448B8 /* TestStatisticsViewController.swift */; };
 		CACEA460A823729E26FD528C /* Pods_FakeNFTTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ABD77CA43087E7AD3BFC123 /* Pods_FakeNFTTests.framework */; };
@@ -155,7 +155,6 @@
 		558E39E62C68CE0900FB86AC /* NftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftService.swift; sourceTree = "<group>"; };
 		5AC154B8566CB76276E119CB /* Pods_FakeNFT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FakeNFT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BD4A8F65D528D82485FF832 /* Pods-FakeNFT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FakeNFT.release.xcconfig"; path = "Target Support Files/Pods-FakeNFT/Pods-FakeNFT.release.xcconfig"; sourceTree = "<group>"; };
-		84FF0BC22D131F4900EF9ACC /* BaurasDecompositionProfil.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BaurasDecompositionProfil.md; sourceTree = "<group>"; };
 		84FF0BC42D13219B00EF9ACC /* UserProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileImageView.swift; sourceTree = "<group>"; };
 		84FF0BC82D13225B00EF9ACC /* UserPicCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPicCell.swift; sourceTree = "<group>"; };
 		84FF0BCB2D13230500EF9ACC /* UpdateProfileDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileDto.swift; sourceTree = "<group>"; };
@@ -194,6 +193,7 @@
 		84FF0C4C2D1367A900EF9ACC /* NFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFT.swift; sourceTree = "<group>"; };
 		84FF0C662D136BB100EF9ACC /* Statistic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statistic.swift; sourceTree = "<group>"; };
 		84FF0CA12D14489B00EF9ACC /* MyNftHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNftHelper.swift; sourceTree = "<group>"; };
+		84FF0D112D19C13800EF9ACC /* BaurasDecompositionProfil.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BaurasDecompositionProfil.md; sourceTree = "<group>"; };
 		8AF91C472D0B6DFF006448B8 /* TestCartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCartViewController.swift; sourceTree = "<group>"; };
 		8AF91C4A2D0B6E38006448B8 /* TestStatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStatisticsViewController.swift; sourceTree = "<group>"; };
 		BD79DB3064D5DA1BE452D6E7 /* Pods-FakeNFTTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FakeNFTTests.debug.xcconfig"; path = "Target Support Files/Pods-FakeNFTTests/Pods-FakeNFTTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -471,7 +471,7 @@
 		84FF0BC12D131F3E00EF9ACC /* Docs */ = {
 			isa = PBXGroup;
 			children = (
-				84FF0BC22D131F4900EF9ACC /* BaurasDecompositionProfil.md */,
+				84FF0D112D19C13800EF9ACC /* BaurasDecompositionProfil.md */,
 			);
 			path = Docs;
 			sourceTree = "<group>";
@@ -773,7 +773,7 @@
 				E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */,
 				3F6806A029CBBAF200B4F915 /* Assets.xcassets in Resources */,
 				3F68069E29CBBAF100B4F915 /* Main.storyboard in Resources */,
-				84FF0BC32D131F4900EF9ACC /* BaurasDecompositionProfil.md in Resources */,
+				84FF0D122D19C13800EF9ACC /* BaurasDecompositionProfil.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
