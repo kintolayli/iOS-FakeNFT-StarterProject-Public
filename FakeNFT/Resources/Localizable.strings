@@ -7,3 +7,8 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+
+"CatalogController.sortNFT.sortType1" = "По названию";
+"CatalogController.sortNFT.sortType2" = "По количеству NFT";
+"CatalogController.sortNFT.closeTitle" = "Закрыть";
+"CatalogController.sortNFT.sortTitle" = "Сортировка";
