@@ -35,7 +35,7 @@ final class TabBarController: UITabBarController {
             servicesAssembly: servicesAssembly
         )
 
-        let catalogController = TestCatalogViewController(
+        let catalogController = CatalogViewController(
             servicesAssembly: servicesAssembly
         )
 
@@ -52,7 +52,11 @@ final class TabBarController: UITabBarController {
         cartController.tabBarItem = cartTabBarItem
         statisticsController.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileController, catalogController, cartController, statisticsController]
+        viewControllers = [
+            profileController,
+            UINavigationController(rootViewController: catalogController),
+            cartController,
+            statisticsController]
 
         setupUI()
     }
