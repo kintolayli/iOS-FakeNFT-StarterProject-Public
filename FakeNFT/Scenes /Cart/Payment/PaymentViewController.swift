@@ -114,14 +114,23 @@ final class PaymentViewController: UIViewController {
         agreementButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         agreementButton.addTarget(self, action: #selector(didTapAgreementButton), for: .touchUpInside)
 
+        payButton.backgroundColor = UIColor(resource: .ypBlack)
+        payButton.setTitle("Оплатить", for: .normal)
+        payButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        payButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        payButton.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
+        payButton.layer.cornerRadius = 16
+        payButton.clipsToBounds = true
         
         footerView.translatesAutoresizingMaskIntoConstraints = false
         agreementLabel.translatesAutoresizingMaskIntoConstraints = false
         agreementButton.translatesAutoresizingMaskIntoConstraints = false
+        payButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(footerView)
         footerView.addSubview(agreementLabel)
         footerView.addSubview(agreementButton)
+        footerView.addSubview(payButton)
         
         NSLayoutConstraint.activate([
             footerView.heightAnchor.constraint(equalToConstant: 186),
@@ -140,11 +149,23 @@ final class PaymentViewController: UIViewController {
             agreementButton.topAnchor.constraint(equalTo: agreementLabel.bottomAnchor),
             agreementButton.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 16)
         ])
+        
+        NSLayoutConstraint.activate([
+            payButton.heightAnchor.constraint(equalToConstant: 60),
+            payButton.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 20),
+            payButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -20),
+            payButton.topAnchor.constraint(equalTo: agreementButton.bottomAnchor, constant: 16),
+        ])
     }
     
     @objc
     private func didTapAgreementButton() {
         let agreementLink = "https://yandex.ru/legal/practicum_termsofuse/"
+    }
+    
+    @objc
+    private func didTapPayButton() {
+        
     }
 }
     
