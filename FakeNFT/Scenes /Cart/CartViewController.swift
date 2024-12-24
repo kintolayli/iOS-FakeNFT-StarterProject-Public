@@ -143,7 +143,10 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     @objc
     private func didTapProceedPaymentButtonButton() {
         let paymentViewController = PaymentViewController()
-        navigationController?.pushViewController(paymentViewController, animated: true)
+        let paymentNavigationColntroller = UINavigationController(rootViewController: paymentViewController)
+        paymentNavigationColntroller.navigationBar.titleTextAttributes = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
+        paymentNavigationColntroller.modalPresentationStyle = .fullScreen
+        present(paymentNavigationColntroller, animated: true)
     }
 }
 
