@@ -31,6 +31,9 @@ struct GeometricParams {
 
 final class PaymentViewController: UIViewController {
     private let currenciesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let footerView = UIView()
+    private let agreementButton = UIButton()
+    private let payButton = UIButton()
     
     private let currencies = CurrencyMocks.currencies
     private var pickedCurrencyIndex = -1
@@ -56,6 +59,7 @@ final class PaymentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationItem()
+        setupFooterView()
         setupCurrenciesCollectionView()
     }
     
@@ -88,10 +92,59 @@ final class PaymentViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             currenciesCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            currenciesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            currenciesCollectionView.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -20),
             currenciesCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             currenciesCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
+    }
+    
+    private func setupFooterView() {
+        footerView.backgroundColor = UIColor(resource: .ypLightGrey)
+        footerView.layer.cornerRadius = 16
+        footerView.clipsToBounds = true
+        
+        let agreementLabel = UILabel()
+        agreementLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        agreementLabel.textColor = UIColor(resource: .ypBlack)
+        agreementLabel.text = "Совершая покупку, вы соглашаетесь с условиями"
+        
+        agreementButton.backgroundColor = UIColor(resource: .ypLightGrey)
+        agreementButton.setTitle("Пользовательского соглашения", for: .normal)
+        agreementButton.setTitleColor(UIColor(resource: .ypBlue), for: .normal)
+        agreementButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        agreementButton.addTarget(self, action: #selector(didTapAgreementButton), for: .touchUpInside)
+
+        
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        agreementLabel.translatesAutoresizingMaskIntoConstraints = false
+        agreementButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(footerView)
+        footerView.addSubview(agreementLabel)
+        footerView.addSubview(agreementButton)
+        
+        NSLayoutConstraint.activate([
+            footerView.heightAnchor.constraint(equalToConstant: 186),
+            footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            footerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            agreementLabel.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 16),
+            agreementLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 16),
+        ])
+        
+        NSLayoutConstraint.activate([
+            agreementButton.heightAnchor.constraint(equalToConstant: 26),
+            agreementButton.topAnchor.constraint(equalTo: agreementLabel.bottomAnchor),
+            agreementButton.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 16)
+        ])
+    }
+    
+    @objc
+    private func didTapAgreementButton() {
+        let agreementLink = "https://yandex.ru/legal/practicum_termsofuse/"
     }
 }
     
