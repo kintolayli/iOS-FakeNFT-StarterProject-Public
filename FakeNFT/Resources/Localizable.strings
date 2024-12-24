@@ -7,3 +7,8 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+"Cart.payment" = "К оплате";
+"Cart.delete" = "Удалить";
+"Cart.return" = "Вернуться";
+"Cart.confirmation" = "Вы уверены, что хотите удалить объект из корзины?";
+"Cart.plug" = "Корзина пуста";
