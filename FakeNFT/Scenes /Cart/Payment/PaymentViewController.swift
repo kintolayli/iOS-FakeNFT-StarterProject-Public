@@ -33,6 +33,7 @@ final class PaymentViewController: UIViewController {
     private let currenciesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private let currencies = CurrencyMocks.currencies
+    private var pickedCurrencyIndex = -1
     
     private let sectionParams = GeometricParams(cellCount: 2,
                                                 leftInset: 16,
@@ -77,20 +78,17 @@ final class PaymentViewController: UIViewController {
         currenciesCollectionView.register(CurrenciesCollectionViewCell.self, forCellWithReuseIdentifier: CurrenciesCollectionViewCell.identifier)
         
         currenciesCollectionView.allowsMultipleSelection = false
-        currenciesCollectionView.backgroundColor = UIColor(resource: .ypBlue)
+        currenciesCollectionView.backgroundColor = UIColor(resource: .ypWhite)
         
         currenciesCollectionView.dataSource = self
         currenciesCollectionView.delegate = self
-        
-        currenciesCollectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 60, right: 0)
-        
         currenciesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(currenciesCollectionView)
         
         NSLayoutConstraint.activate([
             currenciesCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            currenciesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            currenciesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             currenciesCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             currenciesCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
@@ -107,8 +105,15 @@ extension PaymentViewController: UICollectionViewDataSource {
         else {
             return UICollectionViewCell()
         }
+        cell.currency = currencies[indexPath.row]
+        cell.isPicked = pickedCurrencyIndex == indexPath.row
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        pickedCurrencyIndex = indexPath.row
+        currenciesCollectionView.reloadData()
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
