@@ -5,8 +5,10 @@
 //  Created by Виталий Фульман on 22.12.2024.
 //
 
-final class CartPresenter {
-    weak var viewController: CartViewController?
+
+
+final class CartPresenter: CartPresenterProtocol {
+    weak var viewController: CartViewControllerProtocol?
     
     var items: [CartItem] {
         cartService.items

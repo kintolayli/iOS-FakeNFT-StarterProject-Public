@@ -1,7 +1,7 @@
 import UIKit
 
-class CartViewController: UIViewController {
-    private var presenter: CartPresenter
+final class CartViewController: UIViewController, CartViewControllerProtocol {
+    private var presenter: CartPresenterProtocol
     private let cartTableView = UITableView(frame: .zero, style: .plain)
     
     private let orderDatailsView = UIView()
@@ -10,7 +10,7 @@ class CartViewController: UIViewController {
     private let proceedPaymentButton = UIButton()
     private let plugLabel = UILabel()
     
-    init(presenter: CartPresenter) {
+    init(presenter: CartPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
         presenter.viewController = self
@@ -30,6 +30,11 @@ class CartViewController: UIViewController {
         setupCartTableView()
         setupPlugLabel()
         updatePlugLabelVisibility()
+    }
+    
+    func updateOrderDetails(totalCost: Float, itemsCount: Int) {
+        totalCostLabel.text = String(format: "%.2f ETH", totalCost)
+        itemCounterLabel.text = "\(itemsCount) NFT"
     }
     
     private func setupNavigationItem() {
@@ -81,11 +86,6 @@ class CartViewController: UIViewController {
             cartTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             cartTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
-    }
-    
-    func updateOrderDetails(totalCost: Float, itemsCount: Int) {
-        totalCostLabel.text = String(format: "%.2f ETH", totalCost)
-        itemCounterLabel.text = "\(itemsCount) NFT"
     }
     
     private func setupOrderDetailsView() {
