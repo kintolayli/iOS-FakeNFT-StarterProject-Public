@@ -47,6 +47,7 @@ final class TabBarController: UITabBarController {
         )
         
         let cartNavigationColntroller = UINavigationController(rootViewController: cartController)
+        cartNavigationColntroller.navigationBar.titleTextAttributes = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
 
         profileController.tabBarItem = profileTabBarItem
         catalogController.tabBarItem = catalogTabBarItem
