@@ -5,60 +5,63 @@ final class TabBarController: UITabBarController {
     var servicesAssembly: ServicesAssembly!
 
     private let profileTabBarItem = UITabBarItem(
-        title: L10n.Tab.profile,
-        image: UIImage(named: "ProfileTabBarItemImage"),
+        title: LocalizationKey.tabProfile.localized(),
+        image: UIImage(named: "profile"),
         tag: 0
     )
 
     private let catalogTabBarItem = UITabBarItem(
-        title: L10n.Tab.catalog,
-        image: UIImage(named: "CatalogTabBarItemImage"),
-        tag: 0
+        title: LocalizationKey.tabCatalog.localized(),
+        image: UIImage(named: "catalog"),
+        tag: 1
     )
 
-    private let cartTabBarItem = UITabBarItem(
-        title: L10n.Tab.cart,
-        image: UIImage(named: "CartTabBarItemImage"),
-        tag: 0
+    private let basketTabBarItem = UITabBarItem(
+        title: LocalizationKey.tabBasket.localized(),
+        image: UIImage(named: "basket"),
+        tag: 2
     )
 
-    private let statisticsTabBarItem = UITabBarItem(
-        title: L10n.Tab.statistics,
-        image: UIImage(named: "StatisticsTabBarItemImage"),
-        tag: 0
+    private let statisticTabBarItem = UITabBarItem(
+        title: LocalizationKey.tabStatistic.localized(),
+        image: UIImage(named: "statistic"),
+        tag: 3
     )
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let profileController = TestProfileViewController(
-            servicesAssembly: servicesAssembly
-        )
-
-        let catalogController = TestCatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
-
-        let cartController = TestCartViewController(
-            servicesAssembly: servicesAssembly
-        )
-
-        let statisticsController = TestStatisticsViewController(
-            servicesAssembly: servicesAssembly
-        )
-
-        profileController.tabBarItem = profileTabBarItem
+        let profileNavigationController = createProfileViewController()
+        let catalogController = UIViewController()
+        catalogController.view.backgroundColor = .systemBackground
         catalogController.tabBarItem = catalogTabBarItem
-        cartController.tabBarItem = cartTabBarItem
-        statisticsController.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileController, catalogController, cartController, statisticsController]
+        let basketController = UIViewController()
+        basketController.view.backgroundColor = .systemBackground
+        basketController.tabBarItem = basketTabBarItem
 
-        setupUI()
+        let statisticController = UIViewController()
+        statisticController.view.backgroundColor = .systemBackground
+        statisticController.tabBarItem = statisticTabBarItem
+
+        viewControllers = [profileNavigationController, catalogController, basketController, statisticController]
+        view.backgroundColor = .systemBackground
+        tabBar.unselectedItemTintColor = .ypBlack
     }
 
-    private func setupUI() {
-        tabBar.unselectedItemTintColor = UIColor(named: "ypBlack")
-        tabBar.backgroundColor = UIColor(named: "ypWhite")
+    private func createProfileViewController() -> UINavigationController {
+        let profileService = servicesAssembly.profileService
+
+        let profileRepository = ProfileRepositoryImpl(profileService: profileService)
+        let profileRouter = ProfileRouter(profileService: profileService)
+        let profilePresenter = ProfilePresenter(
+            router: profileRouter,
+            repository: profileRepository
+        )
+        let profileController = ProfileViewController(presenter: profilePresenter)
+        profilePresenter.view = profileController
+        profileRouter.viewController = profileController
+        profileController.tabBarItem = profileTabBarItem
+        return UINavigationController(rootViewController: profileController)
     }
 }
