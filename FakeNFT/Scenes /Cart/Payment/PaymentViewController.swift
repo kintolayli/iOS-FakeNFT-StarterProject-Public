@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol PaymentViewControllerDelegate: AnyObject {
+    func returnToCatalogTab()
+}
+
 struct GeometricParams {
     let cellCount: Int
     let leftInset: CGFloat
@@ -30,6 +34,8 @@ struct GeometricParams {
 }
 
 final class PaymentViewController: UIViewController {
+    weak var delegate: PaymentViewControllerDelegate?
+    
     private let currenciesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let footerView = UIView()
     private let agreementButton = UIButton()
@@ -169,6 +175,7 @@ final class PaymentViewController: UIViewController {
     @objc
     private func didTapPayButton() {
         let successfulVC = SuccessfulPaymentViewController()
+        successfulVC.delegate = self
         successfulVC.modalPresentationStyle = .overFullScreen
         present(successfulVC, animated: true)
     }
@@ -221,4 +228,10 @@ extension PaymentViewController: UICollectionViewDelegateFlowLayout {
         return sectionParams.cellSpacing
     }
 }
-    
+
+extension PaymentViewController: SuccessfulPaymentViewControllerDelegate {
+    func successPayment() {
+        navigationController?.dismiss(animated: true)
+        delegate?.returnToCatalogTab()
+    }
+}

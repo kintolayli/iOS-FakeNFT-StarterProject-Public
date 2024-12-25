@@ -143,6 +143,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     @objc
     private func didTapProceedPaymentButtonButton() {
         let paymentViewController = PaymentViewController()
+        paymentViewController.delegate = self
         let paymentNavigationColntroller = UINavigationController(rootViewController: paymentViewController)
         paymentNavigationColntroller.navigationBar.titleTextAttributes = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
         paymentNavigationColntroller.modalPresentationStyle = .fullScreen
@@ -182,5 +183,11 @@ extension CartViewController: CartRemovingViewControllerDelegate {
         presenter.removeItemByNftId(nftId: nftId)
         cartTableView.reloadData()
         updatePlugLabelVisibility()
+    }
+}
+
+extension CartViewController: PaymentViewControllerDelegate {
+    func returnToCatalogTab() {
+        tabBarController?.selectedIndex = 1
     }
 }

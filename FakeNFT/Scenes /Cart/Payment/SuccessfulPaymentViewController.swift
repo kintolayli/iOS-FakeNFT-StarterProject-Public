@@ -5,9 +5,16 @@
 //  Created by Виталий Фульман on 25.12.2024.
 //
 
+protocol SuccessfulPaymentViewControllerDelegate: AnyObject {
+    func successPayment()
+}
+
+
 import UIKit
 
 final class SuccessfulPaymentViewController: UIViewController {
+    weak var delegate: SuccessfulPaymentViewControllerDelegate?
+    
     private let nftImageView = UIImageView()
     private let greetingLabel = UILabel()
     private let purchaseView = UIView()
@@ -51,7 +58,8 @@ final class SuccessfulPaymentViewController: UIViewController {
     
     @objc
     private func didTapReturnToCatalogButton() {
-
+        dismiss(animated: false)
+        delegate?.successPayment()
     }
     
     private func setupPurchaseView() {
