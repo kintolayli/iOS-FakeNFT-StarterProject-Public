@@ -179,6 +179,13 @@ final class PaymentViewController: UIViewController {
         successfulVC.modalPresentationStyle = .overFullScreen
         present(successfulVC, animated: true)
     }
+    
+    private func showUnsuccesfullPaymentAlert() {
+        let alert = UIAlertController(title: "", message: "Не удалось произвести оплату", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
     
 extension PaymentViewController: UICollectionViewDataSource {
