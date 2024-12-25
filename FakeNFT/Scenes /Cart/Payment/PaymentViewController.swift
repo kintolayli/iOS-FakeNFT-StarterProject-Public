@@ -168,7 +168,9 @@ final class PaymentViewController: UIViewController {
     
     @objc
     private func didTapPayButton() {
-        
+        let successfulVC = SuccessfulPaymentViewController()
+        successfulVC.modalPresentationStyle = .overFullScreen
+        present(successfulVC, animated: true)
     }
 }
     
