@@ -115,16 +115,16 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         let agreementLabel = UILabel()
         agreementLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         agreementLabel.textColor = UIColor(resource: .ypBlack)
-        agreementLabel.text = "Совершая покупку, вы соглашаетесь с условиями"
+        agreementLabel.text = L10n.Payment.agreementLabel
         
         agreementButton.backgroundColor = UIColor(resource: .ypLightGrey)
-        agreementButton.setTitle("Пользовательского соглашения", for: .normal)
+        agreementButton.setTitle(L10n.Payment.agreementLinkText, for: .normal)
         agreementButton.setTitleColor(UIColor(resource: .ypBlue), for: .normal)
         agreementButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         agreementButton.addTarget(self, action: #selector(didTapAgreementButton), for: .touchUpInside)
 
         payButton.backgroundColor = UIColor(resource: .ypBlack)
-        payButton.setTitle("Оплатить", for: .normal)
+        payButton.setTitle(L10n.Payment.pay, for: .normal)
         payButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         payButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         payButton.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
@@ -187,9 +187,9 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     }
     
     private func showUnsuccesfullPaymentAlert() {
-        let alert = UIAlertController(title: "", message: "Не удалось произвести оплату", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: nil))
+        let alert = UIAlertController(title: "", message: L10n.Payment.alertMessage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 }

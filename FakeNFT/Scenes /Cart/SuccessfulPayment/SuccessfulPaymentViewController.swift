@@ -36,7 +36,7 @@ final class SuccessfulPaymentViewController: UIViewController {
     
     private func setupReturnToCatalogButton() {
         returnToCatalogButton.backgroundColor = UIColor(resource: .ypBlack)
-        returnToCatalogButton.setTitle("Вернуться в каталог", for: .normal)
+        returnToCatalogButton.setTitle(L10n.SuccessfulPayment.returnToCatalogTab, for: .normal)
         returnToCatalogButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
         returnToCatalogButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         returnToCatalogButton.addTarget(self, action: #selector(didTapReturnToCatalogButton), for: .touchUpInside)
@@ -65,7 +65,7 @@ final class SuccessfulPaymentViewController: UIViewController {
         let succesfullPaymentImage = UIImage(resource: .succesfullPayment)
         nftImageView.image = succesfullPaymentImage
         
-        greetingLabel.text = "Успех! Оплата прошла, поздравляем с покупкой!"
+        greetingLabel.text = L10n.SuccessfulPayment.greeting
         greetingLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         greetingLabel.textColor = UIColor(resource: .ypBlack)
         greetingLabel.numberOfLines = 2
