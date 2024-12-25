@@ -69,7 +69,7 @@ final class PaymentViewController: UIViewController {
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         backButton.tintColor = UIColor(resource: .ypBlack)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-
+        
         navigationItem.title = "Выберите способ оплаты"
     }
     
@@ -83,9 +83,9 @@ final class PaymentViewController: UIViewController {
         
         currenciesCollectionView.allowsMultipleSelection = false
         currenciesCollectionView.backgroundColor = UIColor(resource: .ypWhite)
-        
         currenciesCollectionView.dataSource = self
         currenciesCollectionView.delegate = self
+        
         currenciesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(currenciesCollectionView)
@@ -159,8 +159,11 @@ final class PaymentViewController: UIViewController {
     }
     
     @objc
-    private func didTapAgreementButton() {
-        let agreementLink = "https://yandex.ru/legal/practicum_termsofuse/"
+    private func didTapAgreementButton() {        
+        let agreementWebViewController = WebViewController()
+        let agreementUrl = "https://yandex.ru/legal/practicum_termsofuse/"
+        agreementWebViewController.load(urlString: agreementUrl)
+        navigationController?.pushViewController(agreementWebViewController, animated: true)
     }
     
     @objc

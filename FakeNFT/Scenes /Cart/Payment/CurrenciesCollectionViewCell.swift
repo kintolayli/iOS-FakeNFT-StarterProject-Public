@@ -44,7 +44,6 @@ final class CurrenciesCollectionViewCell: UICollectionViewCell {
     private func setupCellView() {
         cellView.backgroundColor = UIColor(resource: .ypLightGrey)
         cellView.layer.cornerRadius = 16
-        
         cellView.layer.borderWidth = 0
         cellView.layer.borderColor = UIColor(resource: .ypBlack).cgColor
         
