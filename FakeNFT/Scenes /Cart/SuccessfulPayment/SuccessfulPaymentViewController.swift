@@ -5,12 +5,11 @@
 //  Created by Виталий Фульман on 25.12.2024.
 //
 
+import UIKit
+
 protocol SuccessfulPaymentViewControllerDelegate: AnyObject {
     func successPayment()
 }
-
-
-import UIKit
 
 final class SuccessfulPaymentViewController: UIViewController {
     weak var delegate: SuccessfulPaymentViewControllerDelegate?

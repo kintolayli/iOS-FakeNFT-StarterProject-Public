@@ -33,15 +33,16 @@ struct GeometricParams {
     }
 }
 
-final class PaymentViewController: UIViewController {
+final class PaymentViewController: UIViewController, PaymentViewControllerProtocol {
     weak var delegate: PaymentViewControllerDelegate?
+
+    private var presenter: PaymentPresenterProtocol
     
     private let currenciesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let footerView = UIView()
     private let agreementButton = UIButton()
     private let payButton = UIButton()
     
-    private let currencies = CurrencyMocks.currencies
     private var pickedCurrencyIndex = -1
     
     private let sectionParams = GeometricParams(cellCount: 2,
@@ -53,9 +54,11 @@ final class PaymentViewController: UIViewController {
                                                 lineSpacing: 7
     )
     
-    init() {
+    init(presenter: PaymentPresenterProtocol) {
+        self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = UIColor(resource: .ypWhite)
+        presenter.viewController = self
     }
     
     required init?(coder: NSCoder) {
@@ -166,9 +169,12 @@ final class PaymentViewController: UIViewController {
     
     @objc
     private func didTapAgreementButton() {        
+        presenter.openAgreementView()
+    }
+    
+    func loadAWebView(urlString: String) {
         let agreementWebViewController = WebViewController()
-        let agreementUrl = "https://yandex.ru/legal/practicum_termsofuse/"
-        agreementWebViewController.load(urlString: agreementUrl)
+        agreementWebViewController.load(urlString: urlString)
         navigationController?.pushViewController(agreementWebViewController, animated: true)
     }
     
@@ -190,7 +196,7 @@ final class PaymentViewController: UIViewController {
     
 extension PaymentViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return currencies.count
+        return presenter.currencies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -198,7 +204,7 @@ extension PaymentViewController: UICollectionViewDataSource {
         else {
             return UICollectionViewCell()
         }
-        cell.currency = currencies[indexPath.row]
+        cell.currency = presenter.currencies[indexPath.row]
         cell.isPicked = pickedCurrencyIndex == indexPath.row
         
         return cell
