@@ -1,28 +1,40 @@
 final class ServicesAssembly {
-    
+
     private let networkClient: NetworkClient
     private let nftStorage: NftStorage
-    // private let myNftStorage: MyNftStorage
-    //private let statisticStorage: StatisticStorage
-    
+    private let myNftStorage: MyNftStorage
+
     init(
         networkClient: NetworkClient,
-        nftStorage: NftStorage
-        // myNftStorage: MyNftStorage,
+        nftStorage: NftStorage,
+        myNftStorage: MyNftStorage
     ) {
         self.networkClient = networkClient
         self.nftStorage = nftStorage
-        //self.myNftStorage = myNftStorage
+        self.myNftStorage = myNftStorage
     }
-    
+
     var nftService: NftService {
         NftServiceImpl(
             networkClient: networkClient,
             storage: nftStorage
         )
     }
-    
+
+    var myNftService: MyNftService {
+        MyNftServiceImpl(networkClient: networkClient, storage: myNftStorage)
+    }
+
     var profileService: ProfileService {
         ProfileServiceImpl(networkClient: networkClient)
     }
+
+    private var myNftRepository: MyNftRepository {
+        MyNftRepositoryImpl(nftService: myNftService, profileService: profileService)
+    }
+
+    var likeService: NftLikeService {
+        NftLikeServiceImpl(repository: myNftRepository)
+    }
+
 }
