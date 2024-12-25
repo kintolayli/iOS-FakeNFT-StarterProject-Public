@@ -8,17 +8,18 @@
 import UIKit
 
 class NFTCollectionViewController: UIViewController {
-    private let currentCollection: String
+    private let currentCollection: NFTCollectionModel
 
     private lazy var collectionLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24)
+        label.text = "\(currentCollection.name.capitalized) (\(currentCollection.nfts.count))"
         label.textColor = .label
         label.textAlignment = .center
         return label
     }()
 
-    init(currentCollection: String) {
+    init(currentCollection: NFTCollectionModel) {
         self.currentCollection = currentCollection
         super.init(nibName: nil, bundle: nil)
     }

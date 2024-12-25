@@ -35,9 +35,7 @@ final class TabBarController: UITabBarController {
             servicesAssembly: servicesAssembly
         )
 
-        let catalogController = CatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
+        let catalogController = CatalogViewController()
 
         let cartController = TestCartViewController(
             servicesAssembly: servicesAssembly

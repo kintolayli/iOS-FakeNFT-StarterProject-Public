@@ -22,6 +22,7 @@ final class CatalogTableViewCell: UITableViewCell {
 
     private let cellTitleLabel: UILabel = {
         let label = UILabel()
+        label.text = "Title"
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = Asset.ypBlack.color
         return label
@@ -31,7 +32,7 @@ final class CatalogTableViewCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 4
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .equalSpacing
         return stackView
     }()
 
@@ -56,7 +57,7 @@ final class CatalogTableViewCell: UITableViewCell {
 
     func updateCell(titleLabel: String, titleImage: UIImage) {
         DispatchQueue.main.async {
-            self.cellTitleLabel.text = titleLabel
+            self.cellTitleLabel.text = titleLabel.capitalized
             self.cellTitleImage.image = titleImage
         }
     }
@@ -75,7 +76,6 @@ final class CatalogTableViewCell: UITableViewCell {
             cellStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             cellStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -13),
             cellStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            cellStackView.heightAnchor.constraint(equalToConstant: 179),
         ])
     }
 }

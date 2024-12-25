@@ -8,6 +8,8 @@
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
 
+"Alert.ok" = "OK";
+
 "CatalogController.sortNFT.sortType1" = "По названию";
 "CatalogController.sortNFT.sortType2" = "По количеству NFT";
 "CatalogController.sortNFT.closeTitle" = "Закрыть";
