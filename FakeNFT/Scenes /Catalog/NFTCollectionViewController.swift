@@ -12,8 +12,9 @@ class NFTCollectionViewController: UIViewController {
 
     private lazy var collectionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 24)
-        label.text = "\(currentCollection.name.capitalized) (\(currentCollection.nfts.count))"
+        label.font = .systemFont(ofSize: 16)
+        label.text = "\(currentCollection.name.capitalized)\n (\(currentCollection.nfts.count))\n \(currentCollection.id)"
+        label.numberOfLines = 3
         label.textColor = .label
         label.textAlignment = .center
         return label

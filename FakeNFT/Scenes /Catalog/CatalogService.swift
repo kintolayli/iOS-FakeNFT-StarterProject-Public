@@ -14,7 +14,6 @@ final class CatalogService {
     static let didChangeNotification = Notification.Name(rawValue: "CatalogServiceDidChange")
 
     private(set) var catalog: [NFTCollectionModel] = []
-//    private var lastLoadedPage: Int?
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private let dateFormatter = ISO8601DateFormatter()
