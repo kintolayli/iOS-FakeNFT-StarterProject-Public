@@ -14,22 +14,22 @@ created: 2024-12-10T14:32:33+03:00
 
 
 #### Перед стартом разработки:
-- Настроить UITabBarController для всех экранов, добавить иконки экранов, запушить в ветку development (est: 2 часа; fact: x часов)
-- Добавить SwiftGen (Согласовать с командой) (est: 1 часа; fact: x часов)
+- Настроить UITabBarController для всех экранов, добавить иконки экранов, запушить в ветку development (est: 2 часа; fact: 1 час)
+- Добавить SwiftGen (Согласовать с командой) (est: 1 часа; fact: 1 час)
 
 #### Верстка
-- ячейка table(collection?) view (est: 5 часа; fact: x часов)
-- экран NFTCatalogViewController  (est: 3 часа; fact: x часов)
-    - Добавить кнопку фильтрации (est: 1 час; fact: x часов)
-    - Добавить UITableView, настроить delegate и dataSource (est: 2 час; fact: x часов)
+- ячейка table(collection?) view (est: 5 часа; fact: 2 часов)
+- экран NFTCatalogViewController  (est: 3 часа; fact: 2 часа 10 минут)
+    - Добавить кнопку фильтрации (est: 1 час; fact: 10 минут)
+    - Добавить UITableView, настроить delegate и dataSource (est: 2 час; fact: 2 часа)
 #### Логика
-- Сортировка на экране CatalogViewController (est: 4 часа; fact: x часов)
-- Сохранить способ сортировки (est: 2 часа; fact: x часов)
-- Переход на экран конкретной коллекции, при нажатии на элемент (est: 1 час; fact: x часов)
-- Создать заглушку экрана NFTСollectionViewController (est: 1 час; fact: x часов).
-- Добавить Navigation View (est: 1 час; fact: x часов)
+- Сортировка на экране CatalogViewController (est: 4 часа; fact: 30 минут)
+- Сохранить способ сортировки (est: 2 часа; fact: 1 час)
+- Переход на экран конкретной коллекции, при нажатии на элемент (est: 1 час; fact: 1 час)
+- Создать заглушку экрана NFTСollectionViewController (est: 1 час; fact: 1 час).
+- Добавить Navigation View (est: 1 час; fact: 10 минут)
 #### Работа с сетью
- - Создать GET запросы на получение NFT коллекций на экране CatalogViewController (est: 3 часа; fact: x часов)
+ - Создать GET запросы на получение NFT коллекций на экране CatalogViewController (est: 3 часа; fact: 5 часов)
 
 ## Модуль 2:
 
