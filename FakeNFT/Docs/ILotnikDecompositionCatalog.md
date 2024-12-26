@@ -15,13 +15,13 @@ created: 2024-12-10T14:32:33+03:00
 
 #### Перед стартом разработки:
 - Настроить UITabBarController для всех экранов, добавить иконки экранов, запушить в ветку development (est: 2 часа; fact: 1 час)
-- Добавить SwiftGen (Согласовать с командой) (est: 1 часа; fact: 1 час)
+- Добавить SwiftGen (Согласовать с командой) (est: 1 час; fact: 1 час)
 
 #### Верстка
-- ячейка table(collection?) view (est: 5 часа; fact: 2 часов)
+- ячейка table(collection?) view (est: 5 часов; fact: 2 часа)
 - экран NFTCatalogViewController  (est: 3 часа; fact: 2 часа 10 минут)
     - Добавить кнопку фильтрации (est: 1 час; fact: 10 минут)
-    - Добавить UITableView, настроить delegate и dataSource (est: 2 час; fact: 2 часа)
+    - Добавить UITableView, настроить delegate и dataSource (est: 2 часа; fact: 2 часа)
 #### Логика
 - Сортировка на экране CatalogViewController (est: 4 часа; fact: 30 минут)
 - Сохранить способ сортировки (est: 2 часа; fact: 1 час)
