@@ -55,4 +55,23 @@ final class PaymentPresenter: PaymentPresenterProtocol {
             }
         }
     }
+    
+    private func payOrderWithCurrencyId(currencyId: String) {
+        paymentNetworkService.payOrderWithCurrencyId(currencyId: currencyId) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let status):
+                switch status.success {
+                case true:
+                    self.viewController?.showSucessfulPaymentScreen()
+                case false:
+                    print("\(#file):\(#function): The payment processed by server with success state: \(status.success)")
+                    self.viewController?.showUnsuccesfullPaymentAlert()
+                }
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showUnsuccesfullPaymentAlert()
+            }
+        }
+    }
 }

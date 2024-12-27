@@ -46,4 +46,20 @@ final class PaymentNetworkService {
             }
         }
     }
+    
+    func payOrderWithCurrencyId(currencyId: String, completion: @escaping (Result<PaymentItemDto, Error>) -> Void) {
+        let request = PaymentGetRequest(currencyId: currencyId)
+        
+        networkClient.send(request: request, type: PaymentItemDto.self) { result in
+            DispatchQueue.main.async
+            {
+                switch result {
+                case .success(let response):
+                    completion(.success(response))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
 }
