@@ -142,7 +142,10 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     @objc
     private func didTapProceedPaymentButton() {
-        let paymentPresenter = PaymentPresenter()
+        let paymentPresenter = PaymentPresenter(
+            cartService: CartService.shared,
+            paymentNetworkService: PaymentNetworkService(networkClient: DefaultNetworkClient())
+        )
         let paymentViewController = PaymentViewController(presenter: paymentPresenter)
         paymentViewController.delegate = self
         let paymentNavigationColntroller = UINavigationController(rootViewController: paymentViewController)

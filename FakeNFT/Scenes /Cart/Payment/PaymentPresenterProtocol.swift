@@ -10,4 +10,5 @@ protocol PaymentPresenterProtocol: AnyObject {
     var viewController: PaymentViewControllerProtocol? { get set }
     func viewDidLoad()
     func openAgreementView()
+    func payOrder()
 }

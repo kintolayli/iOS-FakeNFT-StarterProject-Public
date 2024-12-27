@@ -72,6 +72,23 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         setupCurrenciesCollectionView()
     }
     
+    func showUnsuccesfullPaymentAlert() {
+        let alert = UIAlertController(title: L10n.Payment.alertMessage, message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil)
+        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil)
+        alert.addAction(cancelAction)
+        alert.addAction(retryActyion)
+        alert.preferredAction = retryActyion
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func showSucessfulPaymentScreen() {
+        let successfulVC = SuccessfulPaymentViewController()
+        successfulVC.delegate = self
+        successfulVC.modalPresentationStyle = .overFullScreen
+        present(successfulVC, animated: true)
+    }
+    
     private func setupNavigationItem() {
         let backButton = UIButton(type: .custom)
         backButton.setImage(UIImage(resource: .backward), for: .normal)
@@ -180,20 +197,6 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     
     @objc
     private func didTapPayButton() {
-        let successfulVC = SuccessfulPaymentViewController()
-        successfulVC.delegate = self
-        successfulVC.modalPresentationStyle = .overFullScreen
-        present(successfulVC, animated: true)
-    }
-    
-    private func showUnsuccesfullPaymentAlert() {
-        let alert = UIAlertController(title: L10n.Payment.alertMessage, message: "", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil)
-        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil)
-        alert.addAction(cancelAction)
-        alert.addAction(retryActyion)
-        alert.preferredAction = retryActyion
-        present(alert, animated: true, completion: nil)
     }
 }
     

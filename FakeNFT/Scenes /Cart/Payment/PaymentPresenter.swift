@@ -7,7 +7,15 @@
 
 final class PaymentPresenter: PaymentPresenterProtocol {
     weak var viewController: PaymentViewControllerProtocol?
+    
+    private let cartService: CartService
+    private let paymentNetworkService: PaymentNetworkService
 
+    init(cartService: CartService, paymentNetworkService: PaymentNetworkService) {
+        self.cartService = cartService
+        self.paymentNetworkService = paymentNetworkService
+    }
+    
     var currencies: [Currency] {
         CurrencyMocks.currencies
     }
@@ -22,5 +30,29 @@ final class PaymentPresenter: PaymentPresenterProtocol {
         viewController?.loadAWebView(urlString: agreementUrl)
     }
     
+    func payOrder() {
+        paymentNetworkService.getOrder { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let order):
+                self.putOrder(orderId: order.id)
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showUnsuccesfullPaymentAlert()
+            }
+        }
+    }
     
+    private func putOrder(orderId: String) {
+        paymentNetworkService.putOrder(nfts: cartService.items.map({$0.nftId}), orderId: orderId) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showUnsuccesfullPaymentAlert()
+            }
+        }
+    }
 }
