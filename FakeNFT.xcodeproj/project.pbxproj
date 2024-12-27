@@ -64,6 +64,8 @@
 		435D56622D1EFEB300348125 /* OrderGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56612D1EFEA800348125 /* OrderGetRequest.swift */; };
 		435D56642D1EFEF000348125 /* PaymentGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56632D1EFEDD00348125 /* PaymentGetRequest.swift */; };
 		435D56662D1EFF5F00348125 /* PaymentItemDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56652D1EFF5500348125 /* PaymentItemDto.swift */; };
+		435D56682D1F0A7200348125 /* CurrenciesGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56672D1F0A6800348125 /* CurrenciesGetRequest.swift */; };
+		435D566A2D1F0B4300348125 /* CurrencyItemDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56692D1F0B1B00348125 /* CurrencyItemDto.swift */; };
 		43AA38DA2D1179DF00597CCC /* CartMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AA38D92D1179D600597CCC /* CartMocks.swift */; };
 		43AA393F2D11854000597CCC /* CartTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AA393E2D11852300597CCC /* CartTableViewCell.swift */; };
 		558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558E39E62C68CE0900FB86AC /* NftService.swift */; };
@@ -160,6 +162,8 @@
 		435D56612D1EFEA800348125 /* OrderGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderGetRequest.swift; sourceTree = "<group>"; };
 		435D56632D1EFEDD00348125 /* PaymentGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGetRequest.swift; sourceTree = "<group>"; };
 		435D56652D1EFF5500348125 /* PaymentItemDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentItemDto.swift; sourceTree = "<group>"; };
+		435D56672D1F0A6800348125 /* CurrenciesGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrenciesGetRequest.swift; sourceTree = "<group>"; };
+		435D56692D1F0B1B00348125 /* CurrencyItemDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyItemDto.swift; sourceTree = "<group>"; };
 		43AA38D92D1179D600597CCC /* CartMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartMocks.swift; sourceTree = "<group>"; };
 		43AA393E2D11852300597CCC /* CartTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartTableViewCell.swift; sourceTree = "<group>"; };
 		46FB4CFBCC35EA25FEA840C0 /* Pods-FakeNFT-FakeNFTUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FakeNFT-FakeNFTUITests.debug.xcconfig"; path = "Target Support Files/Pods-FakeNFT-FakeNFTUITests/Pods-FakeNFT-FakeNFTUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -473,6 +477,8 @@
 			isa = PBXGroup;
 			children = (
 				435D56402D1EB5F500348125 /* PaymentNetworkService.swift */,
+				435D56692D1F0B1B00348125 /* CurrencyItemDto.swift */,
+				435D56672D1F0A6800348125 /* CurrenciesGetRequest.swift */,
 				435D56632D1EFEDD00348125 /* PaymentGetRequest.swift */,
 				435D56652D1EFF5500348125 /* PaymentItemDto.swift */,
 				435D56612D1EFEA800348125 /* OrderGetRequest.swift */,
@@ -863,6 +869,7 @@
 				3FC8C39129D2453B0081F015 /* ExamplePutRequest.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
 				435D56602D1EFE8F00348125 /* OrderItemDto.swift in Sources */,
+				435D566A2D1F0B4300348125 /* CurrencyItemDto.swift in Sources */,
 				435D561B2D1C34CE00348125 /* SuccessfulPaymentViewController.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
@@ -874,6 +881,7 @@
 				435D561D2D1C655800348125 /* PaymentPresenter.swift in Sources */,
 				0CF2C2E12A784C7000FDC837 /* LinePageControl.swift in Sources */,
 				435D56642D1EFEF000348125 /* PaymentGetRequest.swift in Sources */,
+				435D56682D1F0A7200348125 /* CurrenciesGetRequest.swift in Sources */,
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,

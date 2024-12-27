@@ -16,7 +16,8 @@
 "Payment.agreementLabel" = "Совершая покупку, вы соглашаетесь с условиями";
 "Payment.agreementLinkText" = "Пользовательского соглашения";
 "Payment.navBarTitle" = "Выберите способ оплаты";
-"Payment.alertMessage" = "Не удалось произвести оплату";
+"Payment.paymentAlertTitle" = "Не удалось произвести оплату";
+"Payment.currenciesAlertTitle" = "Не удалось получить список валют";
 "Payment.alertCancel" = "Отмена";
 "Payment.alertRetry" = "Повторить";
 "SuccessfulPayment.returnToCatalogTab" = "Вернуться в каталог";

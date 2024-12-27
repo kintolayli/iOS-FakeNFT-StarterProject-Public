@@ -67,15 +67,34 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.viewDidLoad()
+        updatePayButtonState()
         setupNavigationItem()
         setupFooterView()
         setupCurrenciesCollectionView()
     }
     
+    func showCurrenciesLoadigErrorAlert() {
+        let alert = UIAlertController(title: L10n.Payment.currenciesAlertTitle, message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel) { [weak self] action in
+            self?.dismiss(animated: true)
+        }
+        
+        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default) { [weak self] action in
+            self?.presenter.getCurrencies()
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(retryActyion)
+        alert.preferredAction = retryActyion
+        present(alert, animated: true, completion: nil)
+    }
+    
     func showUnsuccesfullPaymentAlert() {
-        let alert = UIAlertController(title: L10n.Payment.alertMessage, message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: L10n.Payment.paymentAlertTitle, message: "", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil)
-        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil)
+        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default) { [weak self] action in
+            self?.presenter.payOrder()
+        }
         alert.addAction(cancelAction)
         alert.addAction(retryActyion)
         alert.preferredAction = retryActyion
@@ -96,12 +115,16 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         backButton.tintColor = UIColor(resource: .ypBlack)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
-        navigationItem.title = "Выберите способ оплаты"
+        navigationItem.title = L10n.Payment.navBarTitle
     }
     
     @objc
     private func didTapBackButton() {
         dismiss(animated: true)
+    }
+    
+    func updateCurrancies() {
+        currenciesCollectionView.reloadData()
     }
     
     private func setupCurrenciesCollectionView() {
@@ -184,6 +207,11 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         ])
     }
     
+    func updatePayButtonState() {
+        payButton.isEnabled = pickedCurrencyIndex >= 0
+        payButton.alpha = payButton.isEnabled == true ? 1 : 0.5
+    }
+    
     @objc
     private func didTapAgreementButton() {        
         presenter.openAgreementView()
@@ -197,6 +225,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     
     @objc
     private func didTapPayButton() {
+        presenter.payOrder()
     }
 }
     
@@ -218,6 +247,8 @@ extension PaymentViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         pickedCurrencyIndex = indexPath.row
+        presenter.selectCurrencyByIndex(index: indexPath.row)
+        updatePayButtonState()
         currenciesCollectionView.reloadData()
     }
     
