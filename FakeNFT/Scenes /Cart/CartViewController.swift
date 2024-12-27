@@ -103,7 +103,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         proceedPaymentButton.backgroundColor = UIColor(resource: .ypBlack)
         proceedPaymentButton.layer.cornerRadius = 16
         proceedPaymentButton.clipsToBounds = true
-        proceedPaymentButton.addTarget(self, action: #selector(didTapProceedPaymentButtonButton), for: .touchUpInside)
+        proceedPaymentButton.addTarget(self, action: #selector(didTapProceedPaymentButton), for: .touchUpInside)
 
         orderDatailsView.translatesAutoresizingMaskIntoConstraints = false
         totalCostLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -141,9 +141,14 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     @objc
-    private func didTapProceedPaymentButtonButton() {
-        let paymentViewController = PaymentViewController()
-        navigationController?.pushViewController(paymentViewController, animated: true)
+    private func didTapProceedPaymentButton() {
+        let paymentPresenter = PaymentPresenter()
+        let paymentViewController = PaymentViewController(presenter: paymentPresenter)
+        paymentViewController.delegate = self
+        let paymentNavigationColntroller = UINavigationController(rootViewController: paymentViewController)
+        paymentNavigationColntroller.navigationBar.titleTextAttributes = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
+        paymentNavigationColntroller.modalPresentationStyle = .fullScreen
+        present(paymentNavigationColntroller, animated: true)
     }
 }
 
@@ -179,5 +184,11 @@ extension CartViewController: CartRemovingViewControllerDelegate {
         presenter.removeItemByNftId(nftId: nftId)
         cartTableView.reloadData()
         updatePlugLabelVisibility()
+    }
+}
+
+extension CartViewController: PaymentViewControllerDelegate {
+    func returnToCatalogTab() {
+        tabBarController?.selectedIndex = 1
     }
 }
