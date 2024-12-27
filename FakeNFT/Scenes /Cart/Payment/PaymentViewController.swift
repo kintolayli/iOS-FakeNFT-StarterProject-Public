@@ -187,9 +187,12 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     }
     
     private func showUnsuccesfullPaymentAlert() {
-        let alert = UIAlertController(title: "", message: L10n.Payment.alertMessage, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil))
+        let alert = UIAlertController(title: L10n.Payment.alertMessage, message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil)
+        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil)
+        alert.addAction(cancelAction)
+        alert.addAction(retryActyion)
+        alert.preferredAction = retryActyion
         present(alert, animated: true, completion: nil)
     }
 }
