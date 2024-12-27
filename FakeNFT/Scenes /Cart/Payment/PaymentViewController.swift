@@ -76,6 +76,12 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         setupCurrenciesCollectionView()
     }
     
+    func loadAWebView(urlString: String) {
+        let agreementWebViewController = WebViewController()
+        agreementWebViewController.load(urlString: urlString)
+        navigationController?.pushViewController(agreementWebViewController, animated: true)
+    }
+    
     func showCurrenciesLoadigErrorAlert() {
         ProgressHUD.dismiss()
         let alert = UIAlertController(title: L10n.Payment.currenciesAlertTitle, message: "", preferredStyle: .alert)
@@ -115,6 +121,16 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         present(successfulVC, animated: true)
     }
     
+    func updateCurrancies() {
+        currenciesCollectionView.reloadData()
+        ProgressHUD.dismiss()
+    }
+    
+    private func updatePayButtonState() {
+        payButton.isEnabled = pickedCurrencyIndex >= 0
+        payButton.alpha = payButton.isEnabled == true ? 1 : 0.5
+    }
+    
     private func setupNavigationItem() {
         let backButton = UIButton(type: .custom)
         backButton.setImage(UIImage(resource: .backward), for: .normal)
@@ -128,11 +144,6 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     @objc
     private func didTapBackButton() {
         dismiss(animated: true)
-    }
-    
-    func updateCurrancies() {
-        currenciesCollectionView.reloadData()
-        ProgressHUD.dismiss()
     }
     
     private func setupCurrenciesCollectionView() {
@@ -215,20 +226,9 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         ])
     }
     
-    func updatePayButtonState() {
-        payButton.isEnabled = pickedCurrencyIndex >= 0
-        payButton.alpha = payButton.isEnabled == true ? 1 : 0.5
-    }
-    
     @objc
     private func didTapAgreementButton() {        
         presenter.openAgreementView()
-    }
-    
-    func loadAWebView(urlString: String) {
-        let agreementWebViewController = WebViewController()
-        agreementWebViewController.load(urlString: urlString)
-        navigationController?.pushViewController(agreementWebViewController, animated: true)
     }
     
     @objc

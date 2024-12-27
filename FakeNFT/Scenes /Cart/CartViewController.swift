@@ -41,8 +41,14 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         let sortButton = UIButton(type: .custom)
         sortButton.setImage(UIImage(resource: .sort), for: .normal)
         sortButton.tintColor = UIColor(resource: .ypBlack)
+        sortButton.addTarget(self, action: #selector(didTapSortButton), for: .touchUpInside)
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
-        
+    }
+    
+    @objc
+    private func didTapSortButton() {
+        showCartSortingAlert()
     }
     
     private func updatePlugLabelVisibility() {
@@ -152,6 +158,16 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         paymentNavigationColntroller.navigationBar.titleTextAttributes = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
         paymentNavigationColntroller.modalPresentationStyle = .fullScreen
         present(paymentNavigationColntroller, animated: true)
+    }
+    
+    private func showCartSortingAlert() {
+        let alert = UIAlertController(title: "", message: "Сортировка", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "По цене", style: .default))
+        alert.addAction(UIAlertAction(title: "По рейтингу", style: .default))
+        alert.addAction(UIAlertAction(title: "По названию", style: .default))
+        alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+
+        present(alert, animated: true, completion: nil)
     }
 }
 
