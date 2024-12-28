@@ -1,5 +1,13 @@
 # ТЗ мобильного приложения FakeNFT
 
+# Запуск приложения
+
+1. Скачать ветку с репозиторием себе на компьютер
+2. Зайти в папку с репозиторием
+3. Перейти на ветку проекта `epic_catalog_sprint_18_module_1`
+4. Выполнить команду `pod install`
+5. Запустить файл FakeNFT.xcworkspace в Xcode 16.1 (команда работает в нем)
+
 # Ссылки
 
 [Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
