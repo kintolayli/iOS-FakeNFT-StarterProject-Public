@@ -13,4 +13,5 @@ protocol PaymentPresenterProtocol: AnyObject {
     func selectCurrencyByIndex(index: Int) 
     func payOrder()
     func getCurrencies()
+    func orderPaymentCompletion()
 }

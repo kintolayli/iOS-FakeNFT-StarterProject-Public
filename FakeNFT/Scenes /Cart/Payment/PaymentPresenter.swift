@@ -47,6 +47,10 @@ final class PaymentPresenter: PaymentPresenterProtocol {
         selectedCurrency = currencies[index]
     }
     
+    func orderPaymentCompletion() {
+        cartService.clearCart()
+    }
+    
     private func putOrder(orderId: String) {
         paymentNetworkService.putOrder(nfts: cartService.items.map({$0.nftId}), orderId: orderId) { [weak self] result in
             guard let self else { return }

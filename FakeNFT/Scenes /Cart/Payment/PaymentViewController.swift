@@ -290,6 +290,7 @@ extension PaymentViewController: UICollectionViewDelegateFlowLayout {
 
 extension PaymentViewController: SuccessfulPaymentViewControllerDelegate {
     func successPayment() {
+        presenter.orderPaymentCompletion()
         navigationController?.dismiss(animated: true)
         delegate?.returnToCatalogTab()
     }

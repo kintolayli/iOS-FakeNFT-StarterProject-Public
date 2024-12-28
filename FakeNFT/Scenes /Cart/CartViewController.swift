@@ -29,7 +29,14 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         setupOrderDetailsView()
         setupCartTableView()
         setupPlugLabel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.sortCartItems(sortingType: nil)
+        presenter.updateOrderDetails()
         updatePlugLabelVisibility()
+        cartTableView.reloadData()
     }
     
     func updateOrderDetails(totalCost: Float, itemsCount: Int) {
@@ -162,11 +169,20 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     private func showCartSortingAlert() {
         let alert = UIAlertController(title: "", message: "Сортировка", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "По цене", style: .default))
-        alert.addAction(UIAlertAction(title: "По рейтингу", style: .default))
-        alert.addAction(UIAlertAction(title: "По названию", style: .default))
+        alert.addAction(UIAlertAction(title: "По цене", style: .default) { [weak self] action in
+            self?.presenter.sortCartItems(sortingType: .byPrice)
+            self?.cartTableView.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: "По рейтингу", style: .default) { [weak self] action in
+            self?.presenter.sortCartItems(sortingType: .byRating)
+            self?.cartTableView.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: "По названию", style: .default) { [weak self] action in
+            self?.presenter.sortCartItems(sortingType: .byTitle)
+            self?.cartTableView.reloadData()
+        })
         alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
-
+        
         present(alert, animated: true, completion: nil)
     }
 }

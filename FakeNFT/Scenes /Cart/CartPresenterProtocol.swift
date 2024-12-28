@@ -8,7 +8,8 @@
 protocol CartPresenterProtocol: AnyObject {
     var items: [CartItem] { get }
     var viewController: CartViewControllerProtocol? { get set }
-    
     func viewDidLoad()
     func removeItemByNftId(nftId: String)
+    func sortCartItems(sortingType: CartSortingType?)
+    func updateOrderDetails()
 }
