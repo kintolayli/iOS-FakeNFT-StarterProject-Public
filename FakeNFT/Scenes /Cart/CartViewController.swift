@@ -168,20 +168,20 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     private func showCartSortingAlert() {
-        let alert = UIAlertController(title: "", message: "Сортировка", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "По цене", style: .default) { [weak self] action in
+        let alert = UIAlertController(title: "", message: L10n.Cart.sortingAlertMessage, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: L10n.Cart.sortingByPrice, style: .default) { [weak self] action in
             self?.presenter.sortCartItems(sortingType: .byPrice)
             self?.cartTableView.reloadData()
         })
-        alert.addAction(UIAlertAction(title: "По рейтингу", style: .default) { [weak self] action in
+        alert.addAction(UIAlertAction(title: L10n.Cart.sortingByRating, style: .default) { [weak self] action in
             self?.presenter.sortCartItems(sortingType: .byRating)
             self?.cartTableView.reloadData()
         })
-        alert.addAction(UIAlertAction(title: "По названию", style: .default) { [weak self] action in
+        alert.addAction(UIAlertAction(title: L10n.Cart.sortingByTitle, style: .default) { [weak self] action in
             self?.presenter.sortCartItems(sortingType: .byTitle)
             self?.cartTableView.reloadData()
         })
-        alert.addAction(UIAlertAction(title: "Закрыть", style: .cancel))
+        alert.addAction(UIAlertAction(title: L10n.Cart.close, style: .cancel))
         
         present(alert, animated: true, completion: nil)
     }

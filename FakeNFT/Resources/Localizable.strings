@@ -12,6 +12,11 @@
 "Cart.return" = "Вернуться";
 "Cart.confirmation" = "Вы уверены, что хотите удалить объект из корзины?";
 "Cart.plug" = "Корзина пуста";
+"Cart.sortingAlertMessage" = "Сортировка";
+"Cart.sortingByPrice" = "По цене";
+"Cart.sortingByTitle" = "По названию";
+"Cart.sortingByRating" = "По рейтингу";
+"Cart.close" = "Закрыть";
 "Payment.pay" = "Оплатить";
 "Payment.agreementLabel" = "Совершая покупку, вы соглашаетесь с условиями";
 "Payment.agreementLinkText" = "Пользовательского соглашения";
