@@ -67,9 +67,67 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.viewDidLoad()
+        updatePayButtonState()
+        UIBlockingProgressHUD.show()
         setupNavigationItem()
         setupFooterView()
         setupCurrenciesCollectionView()
+    }
+    
+    func loadAWebView(urlString: String) {
+        let agreementWebViewController = WebViewController()
+        agreementWebViewController.load(urlString: urlString)
+        navigationController?.pushViewController(agreementWebViewController, animated: true)
+    }
+    
+    func showCurrenciesLoadingErrorAlert() {
+        UIBlockingProgressHUD.dismiss()
+        let alert = UIAlertController(title: L10n.Payment.currenciesAlertTitle, message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel) { [weak self] action in
+            self?.dismiss(animated: true)
+        }
+        
+        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default) { [weak self] action in
+            UIBlockingProgressHUD.show()
+            self?.presenter.getCurrencies()
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(retryActyion)
+        alert.preferredAction = retryActyion
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func showUnsuccesfullPaymentAlert() {
+        UIBlockingProgressHUD.dismiss()
+        let alert = UIAlertController(title: L10n.Payment.paymentAlertTitle, message: "", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil)
+        let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default) { [weak self] action in
+            UIBlockingProgressHUD.show()
+            self?.presenter.payOrder()
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(retryActyion)
+        alert.preferredAction = retryActyion
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func showSucessfulPaymentScreen() {
+        UIBlockingProgressHUD.dismiss()
+        let successfulVC = SuccessfulPaymentViewController()
+        successfulVC.delegate = self
+        successfulVC.modalPresentationStyle = .overFullScreen
+        present(successfulVC, animated: true)
+    }
+    
+    func updateCurrencies() {
+        currenciesCollectionView.reloadData()
+        UIBlockingProgressHUD.dismiss()
+    }
+    
+    private func updatePayButtonState() {
+        payButton.isEnabled = pickedCurrencyIndex >= 0
+        payButton.alpha = payButton.isEnabled == true ? 1 : 0.5
     }
     
     private func setupNavigationItem() {
@@ -79,7 +137,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         backButton.tintColor = UIColor(resource: .ypBlack)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
-        navigationItem.title = "Выберите способ оплаты"
+        navigationItem.title = L10n.Payment.navBarTitle
     }
     
     @objc
@@ -172,25 +230,10 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         presenter.openAgreementView()
     }
     
-    func loadAWebView(urlString: String) {
-        let agreementWebViewController = WebViewController()
-        agreementWebViewController.load(urlString: urlString)
-        navigationController?.pushViewController(agreementWebViewController, animated: true)
-    }
-    
     @objc
     private func didTapPayButton() {
-        let successfulVC = SuccessfulPaymentViewController()
-        successfulVC.delegate = self
-        successfulVC.modalPresentationStyle = .overFullScreen
-        present(successfulVC, animated: true)
-    }
-    
-    private func showUnsuccesfullPaymentAlert() {
-        let alert = UIAlertController(title: "", message: L10n.Payment.alertMessage, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: L10n.Payment.alertRetry, style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
+        UIBlockingProgressHUD.show()
+        presenter.payOrder()
     }
 }
     
@@ -212,6 +255,8 @@ extension PaymentViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         pickedCurrencyIndex = indexPath.row
+        presenter.selectCurrencyByIndex(index: indexPath.row)
+        updatePayButtonState()
         currenciesCollectionView.reloadData()
     }
     
@@ -244,6 +289,7 @@ extension PaymentViewController: UICollectionViewDelegateFlowLayout {
 
 extension PaymentViewController: SuccessfulPaymentViewControllerDelegate {
     func successPayment() {
+        presenter.orderPaymentCompletion()
         navigationController?.dismiss(animated: true)
         delegate?.returnToCatalogTab()
     }

@@ -10,4 +10,8 @@ protocol PaymentPresenterProtocol: AnyObject {
     var viewController: PaymentViewControllerProtocol? { get set }
     func viewDidLoad()
     func openAgreementView()
+    func selectCurrencyByIndex(index: Int) 
+    func payOrder()
+    func getCurrencies()
+    func orderPaymentCompletion()
 }

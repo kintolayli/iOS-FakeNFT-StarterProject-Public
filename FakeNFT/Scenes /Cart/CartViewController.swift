@@ -29,7 +29,15 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         setupOrderDetailsView()
         setupCartTableView()
         setupPlugLabel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.sortCartItems(sortingType: nil)
+        presenter.updateOrderDetails()
+        updateProceedPaymentButtonState()
         updatePlugLabelVisibility()
+        cartTableView.reloadData()
     }
     
     func updateOrderDetails(totalCost: Float, itemsCount: Int) {
@@ -41,8 +49,14 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         let sortButton = UIButton(type: .custom)
         sortButton.setImage(UIImage(resource: .sort), for: .normal)
         sortButton.tintColor = UIColor(resource: .ypBlack)
+        sortButton.addTarget(self, action: #selector(didTapSortButton), for: .touchUpInside)
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
-        
+    }
+    
+    @objc
+    private func didTapSortButton() {
+        showCartSortingAlert()
     }
     
     private func updatePlugLabelVisibility() {
@@ -86,6 +100,11 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
             cartTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             cartTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
+    }
+    
+    private func updateProceedPaymentButtonState() {
+        proceedPaymentButton.isEnabled = !presenter.items.isEmpty
+        proceedPaymentButton.alpha = proceedPaymentButton.isEnabled == true ? 1 : 0.5
     }
     
     private func setupOrderDetailsView() {
@@ -142,13 +161,35 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     @objc
     private func didTapProceedPaymentButton() {
-        let paymentPresenter = PaymentPresenter()
+        let paymentPresenter = PaymentPresenter(
+            cartService: CartService.shared,
+            paymentNetworkService: PaymentNetworkService(networkClient: DefaultNetworkClient())
+        )
         let paymentViewController = PaymentViewController(presenter: paymentPresenter)
         paymentViewController.delegate = self
         let paymentNavigationColntroller = UINavigationController(rootViewController: paymentViewController)
         paymentNavigationColntroller.navigationBar.titleTextAttributes = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
         paymentNavigationColntroller.modalPresentationStyle = .fullScreen
         present(paymentNavigationColntroller, animated: true)
+    }
+    
+    private func showCartSortingAlert() {
+        let alert = UIAlertController(title: "", message: L10n.Cart.sortingAlertMessage, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: L10n.Cart.sortingByPrice, style: .default) { [weak self] action in
+            self?.presenter.sortCartItems(sortingType: .byPrice)
+            self?.cartTableView.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: L10n.Cart.sortingByRating, style: .default) { [weak self] action in
+            self?.presenter.sortCartItems(sortingType: .byRating)
+            self?.cartTableView.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: L10n.Cart.sortingByTitle, style: .default) { [weak self] action in
+            self?.presenter.sortCartItems(sortingType: .byTitle)
+            self?.cartTableView.reloadData()
+        })
+        alert.addAction(UIAlertAction(title: L10n.Cart.close, style: .cancel))
+        
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -183,6 +224,7 @@ extension CartViewController: CartRemovingViewControllerDelegate {
     func removeItem(nftId: String) {
         presenter.removeItemByNftId(nftId: nftId)
         cartTableView.reloadData()
+        updateProceedPaymentButtonState()
         updatePlugLabelVisibility()
     }
 }

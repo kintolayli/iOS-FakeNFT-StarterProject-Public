@@ -7,20 +7,104 @@
 
 final class PaymentPresenter: PaymentPresenterProtocol {
     weak var viewController: PaymentViewControllerProtocol?
+    
+    private let cartService: CartService
+    private let paymentNetworkService: PaymentNetworkService
+    
+    private(set) var currencies: [Currency] = []
 
-    var currencies: [Currency] {
-        CurrencyMocks.currencies
+    private var selectedCurrency: Currency?
+
+    init(cartService: CartService, paymentNetworkService: PaymentNetworkService) {
+        self.cartService = cartService
+        self.paymentNetworkService = paymentNetworkService
     }
     
     private let agreementUrl = "https://yandex.ru/legal/practicum_termsofuse/"
 
     func viewDidLoad() {
-
+        getCurrencies()
     }
     
     func openAgreementView() {
         viewController?.loadAWebView(urlString: agreementUrl)
     }
     
+    func payOrder() {
+        paymentNetworkService.getOrder { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let order):
+                self.putOrder(orderId: order.id)
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showUnsuccesfullPaymentAlert()
+            }
+        }
+    }
     
+    func selectCurrencyByIndex(index: Int) {
+        selectedCurrency = currencies[index]
+    }
+    
+    func orderPaymentCompletion() {
+        cartService.clearCart()
+    }
+    
+    private func putOrder(orderId: String) {
+        paymentNetworkService.putOrder(nfts: cartService.items.map({$0.nftId}), orderId: orderId) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                guard let selectedCurrency else {
+                    print("\(#file):\(#function): Currency is not set")
+                    self.viewController?.showUnsuccesfullPaymentAlert()
+                    return
+                }
+                payOrderWithCurrencyId(currencyId: selectedCurrency.id)
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showUnsuccesfullPaymentAlert()
+            }
+        }
+    }
+    
+    func getCurrencies() {
+        paymentNetworkService.getCurrencies() { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let currencies):
+                self.currencies = currencies.map({ currencyDtoItem in
+                    Currency(title: currencyDtoItem.title,
+                             name: currencyDtoItem.name,
+                             image: currencyDtoItem.image,
+                             id: currencyDtoItem.id
+                    )
+                })
+                self.viewController?.updateCurrencies()
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showCurrenciesLoadingErrorAlert()
+            }
+        }
+    }
+    
+    private func payOrderWithCurrencyId(currencyId: String) {
+        paymentNetworkService.payOrderWithCurrencyId(currencyId: currencyId) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let status):
+                switch status.success {
+                case true:
+                    self.viewController?.showSucessfulPaymentScreen()
+                case false:
+                    print("\(#file):\(#function): The payment processed by server with success state: \(status.success)")
+                    self.viewController?.showUnsuccesfullPaymentAlert()
+                }
+            case .failure(let error):
+                print("\(#file):\(#function): \(error)")
+                self.viewController?.showUnsuccesfullPaymentAlert()
+            }
+        }
+    }
 }
