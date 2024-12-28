@@ -12,10 +12,8 @@ protocol ProfileRouterProtocol: AnyObject {
     func navigateToEditProfile(_ profile: Profile?, delegate: EditProfilePresenterDelegate)
     func navigateToWebsite(websiteURL: String)
     func navigateToMyNFT(_ profile: Profile?)
-    
     func navigateToSelectedNFT(_ profileNftLikes: [String]?)
     func navigateToAboutTheDeveloper()
-    
 }
 
 final class ProfileRouter {
@@ -110,11 +108,22 @@ extension ProfileRouter: ProfileRouterProtocol {
         }
     }
 
-    
-    func navigateToSelectedNFT(_ profileNftLikes: [String]?){
+    func navigateToSelectedNFT(_ profileNftLikes: [String]?) {
+        guard let viewController else { return }
+
+        let presenter = SelectedNftPresenter(likeService: likeService, nftService: nftService)
+
+        let selectedNftViewController = SelectedNftViewController(presenter: presenter)
+        presenter.view = selectedNftViewController
+
+        selectedNftViewController.hidesBottomBarWhenPushed = true
+
+        DispatchQueue.main.async {
+            viewController.navigationController?.pushViewController(selectedNftViewController, animated: true)
+        }
     }
-    func navigateToAboutTheDeveloper()
-     {
+
+    func navigateToAboutTheDeveloper() {
         let urlString = NetworkConstants.urlDev
 
         guard let viewController else { return }
