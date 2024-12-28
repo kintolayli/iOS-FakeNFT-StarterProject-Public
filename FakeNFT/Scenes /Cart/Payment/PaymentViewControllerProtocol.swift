@@ -9,6 +9,6 @@ protocol PaymentViewControllerProtocol: AnyObject {
     func loadAWebView(urlString: String)
     func showUnsuccesfullPaymentAlert()
     func showSucessfulPaymentScreen()
-    func showCurrenciesLoadigErrorAlert()
-    func updateCurrancies()
+    func showCurrenciesLoadingErrorAlert()
+    func updateCurrencies()
 }

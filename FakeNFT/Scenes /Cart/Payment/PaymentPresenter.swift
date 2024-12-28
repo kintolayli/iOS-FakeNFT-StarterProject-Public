@@ -81,10 +81,10 @@ final class PaymentPresenter: PaymentPresenterProtocol {
                              id: currencyDtoItem.id
                     )
                 })
-                self.viewController?.updateCurrancies()
+                self.viewController?.updateCurrencies()
             case .failure(let error):
                 print("\(#file):\(#function): \(error)")
-                self.viewController?.showCurrenciesLoadigErrorAlert()
+                self.viewController?.showCurrenciesLoadingErrorAlert()
             }
         }
     }

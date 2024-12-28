@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import ProgressHUD
 
 protocol PaymentViewControllerDelegate: AnyObject {
     func returnToCatalogTab()
@@ -70,7 +69,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         super.viewDidLoad()
         presenter.viewDidLoad()
         updatePayButtonState()
-        ProgressHUD.show(interaction: false)
+        UIBlockingProgressHUD.show()
         setupNavigationItem()
         setupFooterView()
         setupCurrenciesCollectionView()
@@ -82,15 +81,15 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         navigationController?.pushViewController(agreementWebViewController, animated: true)
     }
     
-    func showCurrenciesLoadigErrorAlert() {
-        ProgressHUD.dismiss()
+    func showCurrenciesLoadingErrorAlert() {
+        UIBlockingProgressHUD.dismiss()
         let alert = UIAlertController(title: L10n.Payment.currenciesAlertTitle, message: "", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel) { [weak self] action in
             self?.dismiss(animated: true)
         }
         
         let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default) { [weak self] action in
-            ProgressHUD.show(interaction: false)
+            UIBlockingProgressHUD.show()
             self?.presenter.getCurrencies()
         }
         alert.addAction(cancelAction)
@@ -100,11 +99,11 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     }
     
     func showUnsuccesfullPaymentAlert() {
-        ProgressHUD.dismiss()
+        UIBlockingProgressHUD.dismiss()
         let alert = UIAlertController(title: L10n.Payment.paymentAlertTitle, message: "", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: L10n.Payment.alertCancel, style: .cancel, handler: nil)
         let retryActyion = UIAlertAction(title: L10n.Payment.alertRetry, style: .default) { [weak self] action in
-            ProgressHUD.show(interaction: false)
+            UIBlockingProgressHUD.show()
             self?.presenter.payOrder()
         }
         alert.addAction(cancelAction)
@@ -114,16 +113,16 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     }
     
     func showSucessfulPaymentScreen() {
-        ProgressHUD.dismiss()
+        UIBlockingProgressHUD.dismiss()
         let successfulVC = SuccessfulPaymentViewController()
         successfulVC.delegate = self
         successfulVC.modalPresentationStyle = .overFullScreen
         present(successfulVC, animated: true)
     }
     
-    func updateCurrancies() {
+    func updateCurrencies() {
         currenciesCollectionView.reloadData()
-        ProgressHUD.dismiss()
+        UIBlockingProgressHUD.dismiss()
     }
     
     private func updatePayButtonState() {
@@ -233,7 +232,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     
     @objc
     private func didTapPayButton() {
-        ProgressHUD.show(interaction: false)
+        UIBlockingProgressHUD.show()
         presenter.payOrder()
     }
 }

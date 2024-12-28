@@ -35,6 +35,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         super.viewWillAppear(animated)
         presenter.sortCartItems(sortingType: nil)
         presenter.updateOrderDetails()
+        updateProceedPaymentButtonState()
         updatePlugLabelVisibility()
         cartTableView.reloadData()
     }
@@ -99,6 +100,11 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
             cartTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             cartTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
+    }
+    
+    private func updateProceedPaymentButtonState() {
+        proceedPaymentButton.isEnabled = !presenter.items.isEmpty
+        proceedPaymentButton.alpha = proceedPaymentButton.isEnabled == true ? 1 : 0.5
     }
     
     private func setupOrderDetailsView() {
@@ -218,6 +224,7 @@ extension CartViewController: CartRemovingViewControllerDelegate {
     func removeItem(nftId: String) {
         presenter.removeItemByNftId(nftId: nftId)
         cartTableView.reloadData()
+        updateProceedPaymentButtonState()
         updatePlugLabelVisibility()
     }
 }
