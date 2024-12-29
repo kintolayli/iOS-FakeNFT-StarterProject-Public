@@ -13,6 +13,7 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
     let catalogService = CatalogService.shared
     var presenter: CatalogPresenterProtocol
     private var catalogServiceObserver: NSObjectProtocol?
+    private var isLoading: Bool = true
 
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -42,6 +43,7 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
     private func setupObserver() {
         UIBlockingProgressHUD.show()
+        isLoading = true
         catalogService.fetchCatalog() { _ in }
         catalogServiceObserver = NotificationCenter.default
             .addObserver(
@@ -51,9 +53,9 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
             ) { [weak self] _ in
                 guard let self = self else { return }
 
-                updateRowsAnimated()
                 presenter.applySortMethod()
                 UIBlockingProgressHUD.dismiss()
+                updateRowsAnimated()
             }
     }
 
@@ -94,24 +96,21 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
     }
 
     func updateRowsAnimated() {
-        let oldCount = presenter.collections.count
-        let newCount = catalogService.catalog.count
-        presenter.collections = catalogService.catalog
+        let shimmerCells = tableView.visibleCells
 
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            }
-        }
+        UIView.animate(withDuration: 0.5, animations: {
+            shimmerCells.forEach { $0.alpha = 0 }
+        }, completion: { _ in
+            self.presenter.collections = self.catalogService.catalog
+            self.isLoading = false
+            self.updateView()
+        })
     }
 }
 
 extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.collections.count
+        return isLoading ? 4 : presenter.collections.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -119,15 +118,20 @@ extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
 
-        cell.prepareForReuse()
-        cell.delegate = self
+        if isLoading {
+            cell.startShimmering()
+        } else {
+            cell.stopShimmering()
+            cell.prepareForReuse()
+            cell.delegate = self
 
-        self.presenter.configCell(for: cell, with: indexPath)
+            self.presenter.configCell(for: cell, with: indexPath)
+        }
         return cell
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 179
+        return 194
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

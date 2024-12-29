@@ -22,18 +22,9 @@ final class CatalogTableViewCell: UITableViewCell {
 
     private let cellTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Title"
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = Asset.ypBlack.color
         return label
-    }()
-
-    private let cellStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        stackView.distribution = .equalSpacing
-        return stackView
     }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -55,6 +46,23 @@ final class CatalogTableViewCell: UITableViewCell {
         super.prepareForReuse( )
     }
 
+    func startShimmering() {
+        cellTitleImage.addShimmer()
+        let grayImage = UIImage.from(color: .segmentInactive, size: CGSize(width: 343, height: 140))
+        cellTitleImage.image = grayImage
+
+        cellTitleLabel.addShimmer()
+        cellTitleLabel.text = "loading"
+        cellTitleLabel.textColor = .segmentInactive
+    }
+
+    func stopShimmering() {
+        cellTitleImage.removeShimmer()
+
+        cellTitleLabel.removeShimmer()
+        cellTitleLabel.textColor = Asset.ypBlack.color
+    }
+
     func updateCell(titleLabel: String, titleImage: UIImage) {
         DispatchQueue.main.async {
             self.cellTitleLabel.text = titleLabel.capitalized
@@ -63,19 +71,21 @@ final class CatalogTableViewCell: UITableViewCell {
     }
 
     private func setupUI() {
-
         [cellTitleImage, cellTitleLabel].forEach {
-            cellStackView.addArrangedSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
         }
 
-        cellStackView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(cellStackView)
-
         NSLayoutConstraint.activate( [
-            cellStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            cellStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            cellStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -13),
-            cellStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellTitleImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            cellTitleImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            cellTitleImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellTitleImage.heightAnchor.constraint(equalToConstant: 140),
+
+            cellTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            cellTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            cellTitleLabel.topAnchor.constraint(equalTo: cellTitleImage.bottomAnchor, constant: 4),
+            cellTitleImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -35),
         ])
     }
 }
