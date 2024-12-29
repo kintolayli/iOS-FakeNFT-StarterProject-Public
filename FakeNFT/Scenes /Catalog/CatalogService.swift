@@ -31,13 +31,8 @@ final class CatalogService {
 
             switch result {
             case .success(let response):
-//                for element in response {
-//                    self.catalog.append(element)
-//                }
                 self.catalog.append(contentsOf: response)
                 completion(.success(self.catalog))
-
-//                NotificationCenter.default.post(name: CatalogService.didChangeNotification, object: nil)
 
             case .failure(let error):
                 completion(.failure(error))
