@@ -20,20 +20,19 @@ final class CatalogService {
 
     private init() {}
 
-    func fetchCatalog(_ completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchCatalog(_ completion: @escaping (Result<[NFTCollectionModel], Error>) -> Void) {
         guard let request = try? makeCatalogRequest() else {
             completion(.failure(NetworkClientError.invalidRequest))
             return
         }
 
-        let task = urlSession.objectTask(for: request) { (result: Result<[NFTCollectionModel], Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<[NFTCollectionModel], Error>) in
+            guard let self = self else { return }
+
             switch result {
             case .success(let response):
-                for element in response {
-                    self.catalog.append(element)
-                }
-
-                NotificationCenter.default.post(name: CatalogService.didChangeNotification, object: nil)
+                self.catalog.append(contentsOf: response)
+                completion(.success(self.catalog))
 
             case .failure(let error):
                 completion(.failure(error))

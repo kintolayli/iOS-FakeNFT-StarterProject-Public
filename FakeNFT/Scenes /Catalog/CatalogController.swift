@@ -1,19 +1,20 @@
 import UIKit
+import Kingfisher
 
 protocol CatalogViewControllerProtocol: AnyObject {
-    var presenter: CatalogPresenterProtocol { get set }
-    var catalogService: CatalogService { get }
-
     func updateView()
-    func updateRowsAnimated()
+    func updateRowsAnimated(newCollections: [NFTCollectionModel], oldCollections: [NFTCollectionModel])
+    func applySortMethod()
+    func showAlert(with model: AlertModel)
+    func sortCollectionsAlphabetically()
+    func sortCollectionsByNFTCount()
 }
 
 
 final class CatalogViewController: UIViewController, CatalogViewControllerProtocol {
-    let catalogService = CatalogService.shared
     var presenter: CatalogPresenterProtocol
-    private var catalogServiceObserver: NSObjectProtocol?
-    private var isLoading: Bool = true
+    //private var isLoading: Bool = true
+    private var sortMethod: SortMethod
 
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -22,41 +23,29 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         return tableView
     }()
 
-    init() {
-        let presenter = CatalogPresenter(catalogService: CatalogService.shared)
+    init(presenter: CatalogPresenterProtocol) {
         self.presenter = presenter
+        self.sortMethod = CatalogViewController.loadSortMethod()
         super.init(nibName: nil, bundle: nil)
-        presenter.viewController = self
     }
+
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        sortMethod = CatalogViewController.loadSortMethod()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupUI()
-        setupObserver()
+        presenter.viewController = self
         presenter.loadInitialData()
-    }
-
-    private func setupObserver() {
-        UIBlockingProgressHUD.show()
-        isLoading = true
-        catalogService.fetchCatalog() { _ in }
-        catalogServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: CatalogService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-
-                presenter.applySortMethod()
-                UIBlockingProgressHUD.dismiss()
-                updateRowsAnimated()
-            }
     }
 
     private func setupUI() {
@@ -95,24 +84,27 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         tableView.reloadData()
     }
 
-    func updateRowsAnimated() {
-        let shimmerCells = tableView.visibleCells
+    func updateRowsAnimated(newCollections: [NFTCollectionModel], oldCollections: [NFTCollectionModel]) {
+        let newCount = newCollections.count
+        let oldCount = oldCollections.count
 
-        UIView.animate(withDuration: 0.5, animations: {
-            shimmerCells.forEach { $0.alpha = 0 }
-        }, completion: { _ in
-            self.presenter.collections = self.catalogService.catalog
-            self.isLoading = false
-            self.updateView()
-        })
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            }
+        }
     }
 }
+
 
 extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isLoading ? 4 : presenter.collections.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogTableViewCell.reuseIdentifier) as? CatalogTableViewCell else {
             return UITableViewCell()
@@ -125,8 +117,36 @@ extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
             cell.prepareForReuse()
             cell.delegate = self
 
-            self.presenter.configCell(for: cell, with: indexPath)
+        cell.backgroundColor = .clear
+        cell.selectionStyle = .none
+
+        let NFTCollectionCoverImageURL = presenter.collections[indexPath.item].cover
+        let imageView = UIImageView()
+        let processor = RoundCornerImageProcessor(cornerRadius: 12)
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: NFTCollectionCoverImageURL,
+                              placeholder: .none,
+                              options: [.processor(processor)]) { result in
+            switch result {
+            case .success:
+                let collectionCount = self.presenter.collections[indexPath.item].nfts.count
+                let collectionName = self.presenter.collections[indexPath.item].name
+                let collectionTitle = "\(collectionName) (\(collectionCount))"
+
+                guard let collectionImage = imageView.image else { return }
+
+                cell.updateCell(titleLabel: collectionTitle, titleImage: collectionImage)
+
+            case .failure(let error):
+                let logMessage =
+                """
+                [\(String(describing: self)).\(#function)]:
+                \(CatalogPresenterError.fetchImageError) - Ошибка получения изображения ячейки таблицы, \(error.localizedDescription)
+                """
+                print(logMessage)
+            }
         }
+
         return cell
     }
 
@@ -141,5 +161,47 @@ extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
         let viewController = NFTCollectionViewController(currentCollection: selectedCollection)
 
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+
+extension CatalogViewController {
+
+    private static func loadSortMethod() -> SortMethod {
+        let sortMethodRawValue = UserDefaults.standard.string(forKey: "CatalogSortMethod") ?? SortMethod.alphabetically.rawValue
+        return SortMethod(rawValue: sortMethodRawValue) ?? .alphabetically
+    }
+
+    private func saveSortMethod() {
+        UserDefaults.standard.set(sortMethod.rawValue, forKey: "CatalogSortMethod")
+    }
+
+    func sortCollectionsAlphabetically() {
+        presenter.sortCollectionsAlphabetically()
+        sortMethod = .alphabetically
+        saveSortMethod()
+        updateView()
+    }
+
+    func sortCollectionsByNFTCount() {
+        presenter.sortCollectionsByNFTCount()
+        sortMethod = .byNFTCount
+        saveSortMethod()
+        updateView()
+    }
+
+    func applySortMethod() {
+        switch sortMethod {
+        case .alphabetically:
+            sortCollectionsAlphabetically()
+        case .byNFTCount:
+            sortCollectionsByNFTCount()
+        }
+    }
+}
+
+extension CatalogViewController {
+    func showAlert(with model: AlertModel) {
+        AlertPresenter.show(model: model, viewController: self, preferredStyle: .actionSheet)
     }
 }
