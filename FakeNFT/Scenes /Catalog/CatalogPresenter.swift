@@ -8,7 +8,9 @@
 
 protocol CatalogPresenterProtocol: AnyObject {
     var collections: [NFTCollectionModel] { get set }
+    var catalogService: CatalogService { get }
     var viewController: CatalogViewControllerProtocol? { get set }
+    var isLoading: Bool { get set }
 
     func loadInitialData()
     func filterButtonTapped()
@@ -18,12 +20,14 @@ protocol CatalogPresenterProtocol: AnyObject {
 
 final class CatalogPresenter: CatalogPresenterProtocol {
     weak var viewController: CatalogViewControllerProtocol?
-    private let catalogService: CatalogService
+    let catalogService: CatalogService
+    var isLoading: Bool
 
     var collections: [NFTCollectionModel] = []
 
     init() {
         self.catalogService = CatalogService.shared
+        isLoading = UIBlockingProgressHUD.status()
     }
 
     func filterButtonTapped() {
@@ -63,15 +67,18 @@ final class CatalogPresenter: CatalogPresenterProtocol {
         catalogService.fetchCatalog() { [weak self] result in
             guard let self = self else { return }
 
+
             switch result {
             case .success(let collections):
                 UIBlockingProgressHUD.dismiss()
+                isLoading = false
 
                 self.collections = collections
                 self.viewController?.updateRowsAnimated(newCollections: catalogService.catalog, oldCollections: collections)
                 self.viewController?.applySortMethod()
             case .failure:
                 UIBlockingProgressHUD.dismiss()
+                isLoading = false
 
                 let alertModel = AlertModel(
                     title: L10n.Error.unknown,

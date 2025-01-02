@@ -80,7 +80,6 @@ final class CatalogTableViewCell: UITableViewCell {
             cellTitleImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             cellTitleImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             cellTitleImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-            cellTitleImage.heightAnchor.constraint(equalToConstant: 140),
 
             cellTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             cellTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

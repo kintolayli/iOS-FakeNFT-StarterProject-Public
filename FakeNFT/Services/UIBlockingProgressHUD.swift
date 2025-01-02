@@ -26,4 +26,9 @@ final class UIBlockingProgressHUD {
     static func dismiss() {
         window?.isUserInteractionEnabled = true
     }
+
+    static func status() -> Bool {
+        guard let window = window else { return false }
+        return window.isUserInteractionEnabled
+    }
 }
