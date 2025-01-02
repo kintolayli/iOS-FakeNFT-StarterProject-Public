@@ -1,19 +1,15 @@
 import UIKit
 import Kingfisher
 
+
 protocol CatalogViewControllerProtocol: AnyObject {
     func updateView()
-    func updateRowsAnimated(newCollections: [NFTCollectionModel], oldCollections: [NFTCollectionModel])
-    func applySortMethod()
     func showAlert(with model: AlertModel)
-    func sortCollectionsAlphabetically()
-    func sortCollectionsByNFTCount()
 }
 
 
 final class CatalogViewController: UIViewController, CatalogViewControllerProtocol {
     var presenter: CatalogPresenterProtocol
-    private var sortMethod: SortMethod
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -22,23 +18,37 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         return tableView
     }()
 
+    private lazy var dataSource: UITableViewDiffableDataSource<CatalogSection, NFTCollectionModel> = {
+        UITableViewDiffableDataSource<CatalogSection, NFTCollectionModel>(tableView: tableView) { tableView, indexPath, itemIdentifier in
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: CatalogTableViewCell.reuseIdentifier
+            ) as? CatalogTableViewCell else {
+                return UITableViewCell()
+            }
+
+            switch CatalogSection(rawValue: indexPath.section) {
+            case .loading:
+                cell.startShimmering()
+            case .data:
+                cell.stopShimmering()
+            default:
+                break
+            }
+
+            self.configureCell(cell, itemIdentifier)
+            return cell
+        }
+    }()
+
     let filterButton = UIButton(type: .custom)
 
     init(presenter: CatalogPresenterProtocol) {
         self.presenter = presenter
-        self.sortMethod = CatalogViewController.loadSortMethod()
         super.init(nibName: nil, bundle: nil)
     }
 
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        sortMethod = CatalogViewController.loadSortMethod()
     }
 
     override func viewDidLoad() {
@@ -47,13 +57,14 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         setupUI()
         presenter.viewController = self
         presenter.loadInitialData()
+
+        applySnapshot()
     }
 
     private func setupUI() {
         view.backgroundColor = Asset.ypWhite.color
 
         tableView.delegate = self
-        tableView.dataSource = self
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -78,71 +89,70 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
     @objc
     private func filterButtonDidTap() {
-        UIView.animate(withDuration: 0.3) {
-            self.filterButton.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-            self.filterButton.transform = CGAffineTransform(scaleX: 1, y: 1)
-        }
-
         presenter.filterButtonTapped()
     }
 
-    func updateView() {
-        tableView.reloadData()
+    private func applySnapshot(animatingDifferences: Bool = true) {
+        var snapshot = NSDiffableDataSourceSnapshot<CatalogSection, NFTCollectionModel>()
+
+        if presenter.isLoading {
+            snapshot.appendSections([.loading])
+            let placeholders = (0..<Constants.placeholdersCount).map { _ in
+                NFTCollectionModel(createdAt: "", name: "", cover: URL(fileURLWithPath: ""), nfts: [UUID()], description: "", author: "", id: UUID())
+            }
+            snapshot.appendItems(placeholders, toSection: .loading)
+        } else {
+            snapshot.deleteSections([.loading])
+            snapshot.appendSections([.data])
+            let items = presenter.collections.map { collection in
+                NFTCollectionModel(
+                    createdAt: collection.createdAt,
+                    name: collection.name,
+                    cover: collection.cover,
+                    nfts: collection.nfts,
+                    description: collection.description,
+                    author: collection.author,
+                    id: collection.id
+                )
+            }
+            snapshot.appendItems(items, toSection: .data)
+        }
+
+        dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
 
-    func updateRowsAnimated(newCollections: [NFTCollectionModel], oldCollections: [NFTCollectionModel]) {
-        let newCount = newCollections.count
-        let oldCount = oldCollections.count
-
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            }
-        }
+    func updateView() {
+        applySnapshot()
     }
 }
 
 
-extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
+extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.isLoading ? 4 : presenter.collections.count
+        return presenter.isLoading ? Constants.placeholdersCount : presenter.collections.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CatalogTableViewCell.reuseIdentifier) as? CatalogTableViewCell else {
-            return UITableViewCell()
-        }
-
-        configureCell(cell, at: indexPath)
-        return cell
-    }
-
-    func configureCell(_ cell: CatalogTableViewCell, at indexPath: IndexPath) {
+    func configureCell(_ cell: CatalogTableViewCell, _ item: NFTCollectionModel) {
         cell.delegate = self
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
 
         if presenter.isLoading {
             cell.startShimmering()
-            print("startShimmering")
         } else {
             cell.stopShimmering()
-            print("stopShimmering")
 
-            let NFTCollectionCoverImageURL = presenter.collections[indexPath.item].cover
+            let NFTCollectionCoverImageURL = item.cover
             let imageView = UIImageView()
-            let processor = RoundCornerImageProcessor(cornerRadius: 12)
+            let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius)
             imageView.kf.indicatorType = .activity
             imageView.kf.setImage(with: NFTCollectionCoverImageURL,
                                   placeholder: .none,
                                   options: [.processor(processor)]) { result in
                 switch result {
                 case .success:
-                    let collectionCount = self.presenter.collections[indexPath.item].nfts.count
-                    let collectionName = self.presenter.collections[indexPath.item].name
+                    let collectionCount = item.nfts.count
+                    let collectionName = item.name
                     let collectionTitle = "\(collectionName) (\(collectionCount))"
 
                     guard let collectionImage = imageView.image else { return }
@@ -162,7 +172,7 @@ extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 194
+        return Constants.cellHeight
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -178,41 +188,5 @@ extension CatalogViewController: UITableViewDelegate, UITableViewDataSource {
 extension CatalogViewController {
     func showAlert(with model: AlertModel) {
         AlertPresenter.show(model: model, viewController: self, preferredStyle: .actionSheet)
-    }
-}
-
-extension CatalogViewController {
-    private static func loadSortMethod() -> SortMethod {
-        let sortMethodRawValue = UserDefaults.standard.string(forKey: "CatalogSortMethod") ?? SortMethod.alphabetically.rawValue
-        return SortMethod(rawValue: sortMethodRawValue) ?? .alphabetically
-    }
-
-    private func saveSortMethod() {
-        DispatchQueue.global(qos: .background).async {
-            UserDefaults.standard.set(self.sortMethod.rawValue, forKey: "CatalogSortMethod")
-        }
-    }
-
-    func sortCollectionsAlphabetically() {
-        presenter.sortCollectionsAlphabetically()
-        sortMethod = .alphabetically
-        saveSortMethod()
-        updateView()
-    }
-
-    func sortCollectionsByNFTCount() {
-        presenter.sortCollectionsByNFTCount()
-        sortMethod = .byNFTCount
-        saveSortMethod()
-        updateView()
-    }
-
-    func applySortMethod() {
-        switch sortMethod {
-        case .alphabetically:
-            sortCollectionsAlphabetically()
-        case .byNFTCount:
-            sortCollectionsByNFTCount()
-        }
     }
 }

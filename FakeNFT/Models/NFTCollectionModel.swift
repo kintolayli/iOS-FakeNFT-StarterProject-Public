@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct NFTCollectionModel: Codable {
+struct NFTCollectionModel: Codable, Hashable {
     let createdAt: String
     let name: String
     let cover: URL
