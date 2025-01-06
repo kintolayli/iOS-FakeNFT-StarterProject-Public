@@ -72,7 +72,7 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         NSLayoutConstraint.activate([
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
 
@@ -179,7 +179,9 @@ extension CatalogViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let selectedCollection = presenter.collections[indexPath.row]
-        let viewController = NFTCollectionViewController(currentCollection: selectedCollection)
+        let viewController = NFTCollectionViewController(
+            currentCollection: selectedCollection,
+            presenter: NFTCollectionPresenter())
 
         navigationController?.pushViewController(viewController, animated: true)
     }

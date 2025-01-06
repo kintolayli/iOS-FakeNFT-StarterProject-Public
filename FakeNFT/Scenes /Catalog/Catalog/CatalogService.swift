@@ -11,7 +11,7 @@ import Foundation
 final class CatalogService {
 
     static var shared = CatalogService()
-    static let didChangeNotification = Notification.Name(rawValue: "CatalogServiceDidChange")
+//    static let didChangeNotification = Notification.Name(rawValue: "CatalogServiceDidChange")
 
     private(set) var catalog: [NFTCollectionModel] = []
     private let urlSession = URLSession.shared

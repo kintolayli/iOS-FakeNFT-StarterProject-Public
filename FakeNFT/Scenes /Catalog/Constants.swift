@@ -13,4 +13,5 @@ enum Constants {
     static let placeholdersCount = 4
     static let buttonAnimationDuration: TimeInterval = 0.3
     static let cornerRadius: CGFloat = 12.0
+    static let imageAspectMultiplier: CGFloat = 0.826
 }

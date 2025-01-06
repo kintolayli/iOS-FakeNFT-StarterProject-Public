@@ -86,6 +86,7 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     }
 }
 
+
 extension CatalogPresenter {
     private static func loadSortMethod() -> SortMethod {
         let sortMethodRawValue = UserDefaults.standard.string(forKey: "CatalogSortMethod") ?? SortMethod.alphabetically.rawValue
