@@ -107,6 +107,24 @@ extension CatalogPresenter {
     }
 
     private func sortCollectionsByNFTCount() {
+        // TODO: - Сервер поломан - в некоторых коллекциях присылается несколько одинаковых NFT с одинаковыми Id, и diffable data source ломается. Строчка ниже это костыль чтобы временно эту проблему решить.
+        collections = collections.map { collection in
+            let uniqueNFTsIds = Set(collection.nfts.map { $0 })
+
+            let uniqueNFTs = uniqueNFTsIds.compactMap { id in
+                collection.nfts.first { $0 == id }
+            }
+
+            return NFTCollectionModel(
+                createdAt: collection.createdAt,
+                name: collection.name,
+                cover: collection.cover,
+                nfts: uniqueNFTs,
+                description: collection.description,
+                author: collection.author,
+                id: collection.id)
+        }
+
         collections = collections.sorted { $0.nfts.count > $1.nfts.count }
         sortMethod = .byNFTCount
         saveSortMethod()

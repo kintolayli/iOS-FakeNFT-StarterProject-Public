@@ -22,7 +22,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
 
-    private lazy var likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
 
         let heartImage = UIImage(systemName: "heart.fill")
@@ -57,7 +57,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
 
-    private lazy var cartButton: UIButton = {
+    lazy var cartButton: UIButton = {
         let button = UIButton(type: .system)
 
         button.setImage(Asset.cartAdd.image, for: .normal)
@@ -138,6 +138,39 @@ class NFTCollectionViewCell: UICollectionViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func startShimmering() {
+        mainImageView.addShimmer()
+        let grayImage = UIImage.from(color: .segmentInactive, size: CGSize(width: 343, height: 140))
+        mainImageView.image = grayImage
+
+        ratingStackView.addShimmer()
+        cartButton.addShimmer()
+        cartButton.isHidden = true
+        likeButton.isHidden = true
+
+        titleLabel.addShimmer()
+        titleLabel.text = "loading"
+        titleLabel.textColor = .segmentInactive
+
+        priceLabel.addShimmer()
+        priceLabel.text = "loading"
+        priceLabel.textColor = .segmentInactive
+    }
+
+    func stopShimmering() {
+        mainImageView.removeShimmer()
+        ratingStackView.removeShimmer()
+        cartButton.removeShimmer()
+        cartButton.isHidden = false
+        likeButton.isHidden = false
+
+        titleLabel.removeShimmer()
+        titleLabel.textColor = Asset.ypBlack.color
+
+        priceLabel.removeShimmer()
+        priceLabel.textColor = Asset.ypBlack.color
     }
 
     func clearRating() {

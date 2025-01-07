@@ -13,19 +13,21 @@ protocol NFTCollectionPresenterProtocol: AnyObject {
     var nfts: [NFTModel] { get set }
     var likes: [UUID] { get }
     var nftsInCart: [UUID] { get }
+    var isLoading: Bool { get set }
 
     func loadLikes(profileId: Int)
     func loadNFTsInCart(profileId: Int)
     func loadInitialData(nftIds: [UUID])
 
-    func sendLike(profileId: Int, nftId: UUID)
-    func sendNFTToCart(profileId: Int, nftId: UUID)
+    func sendLike(profileId: Int, nftId: UUID, completion: @escaping (Bool) -> Void)
+    func sendNFTToCart(profileId: Int, nftId: UUID, completion: @escaping (Bool) -> Void)
 }
 
 final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
     private let nftCollectionService: NFTCollectionService
     private let likeService: NFTLikeService
     private let cartService: NFTCartService
+    var isLoading: Bool
 
     weak var viewController: NFTCollectionViewControllerProtocol?
     var nfts: [NFTModel] = []
@@ -36,6 +38,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         self.nftCollectionService = NFTCollectionService.shared
         self.likeService = NFTLikeService.shared
         self.cartService = NFTCartService.shared
+        isLoading = UIBlockingProgressHUD.status()
     }
 
     func loadLikes(profileId: Int) {
@@ -50,6 +53,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
 
                 likes = likedNFT
                 viewController?.updateView()
+                viewController?.reloadData()
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
 
@@ -65,7 +69,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         }
     }
 
-    func sendLike(profileId: Int, nftId: UUID) {
+    func sendLike(profileId: Int, nftId: UUID, completion: @escaping (Bool) -> Void) {
         UIBlockingProgressHUD.show()
 
         likeService.sendLike(profileId: profileId, nftId: nftId) { [ weak self ] result in
@@ -74,6 +78,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             switch result {
             case .success(_):
                 loadLikes(profileId: profileId)
+                completion(true)
 
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
@@ -102,6 +107,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
 
                 nftsInCart = nfts
                 viewController?.updateView()
+                viewController?.reloadData()
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
 
@@ -117,7 +123,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         }
     }
 
-    func sendNFTToCart(profileId: Int, nftId: UUID) {
+    func sendNFTToCart(profileId: Int, nftId: UUID, completion: @escaping (Bool) -> Void) {
         UIBlockingProgressHUD.show()
 
         cartService.sendNFTToCart(profileId: profileId, nftId: nftId) { [ weak self ] result in
@@ -126,6 +132,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             switch result {
             case .success(_):
                 loadNFTsInCart(profileId: profileId)
+                completion(true)
 
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
@@ -151,11 +158,13 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             switch result {
             case .success(let nfts):
                 UIBlockingProgressHUD.dismiss()
+                isLoading = false
 
                 self.nfts = nfts
                 viewController?.updateView()
             case .failure:
                 UIBlockingProgressHUD.dismiss()
+                isLoading = false
 
                 let alertModel = AlertModel(
                     title: L10n.Error.title,

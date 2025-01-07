@@ -18,15 +18,15 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         return tableView
     }()
 
-    private lazy var dataSource: UITableViewDiffableDataSource<CatalogSection, NFTCollectionModel> = {
-        UITableViewDiffableDataSource<CatalogSection, NFTCollectionModel>(tableView: tableView) { tableView, indexPath, itemIdentifier in
+    private lazy var dataSource: UITableViewDiffableDataSource<LoadingSectionModel, NFTCollectionModel> = {
+        UITableViewDiffableDataSource<LoadingSectionModel, NFTCollectionModel>(tableView: tableView) { tableView, indexPath, itemIdentifier in
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: CatalogTableViewCell.reuseIdentifier
             ) as? CatalogTableViewCell else {
                 return UITableViewCell()
             }
 
-            switch CatalogSection(rawValue: indexPath.section) {
+            switch LoadingSectionModel(rawValue: indexPath.section) {
             case .loading:
                 cell.startShimmering()
             case .data:
@@ -93,7 +93,7 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
     }
 
     private func applySnapshot(animatingDifferences: Bool = true) {
-        var snapshot = NSDiffableDataSourceSnapshot<CatalogSection, NFTCollectionModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<LoadingSectionModel, NFTCollectionModel>()
 
         if presenter.isLoading {
             snapshot.appendSections([.loading])
@@ -151,7 +151,9 @@ extension CatalogViewController: UITableViewDelegate {
                                   options: [.processor(processor)]) { result in
                 switch result {
                 case .success:
-                    let collectionCount = item.nfts.count
+                    // TODO: - Сервер поломан - в некоторых коллекциях присылается несколько одинаковых NFT с одинаковыми Id, и diffable data source ломается. Строчка ниже это костыль чтобы временно эту проблему решить.
+                    let nftsUnique = Array(Set(item.nfts))
+                    let collectionCount = nftsUnique.count
                     let collectionName = item.name
                     let collectionTitle = "\(collectionName) (\(collectionCount))"
 
