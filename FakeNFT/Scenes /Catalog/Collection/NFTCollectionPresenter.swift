@@ -165,7 +165,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             case .failure:
                 UIBlockingProgressHUD.dismiss()
                 isLoading = false
-
+                
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
                     message: L10n.Error.unknown,

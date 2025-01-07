@@ -322,14 +322,14 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
                 case .success:
                     guard let nftImage = imageView.image else { return }
 
-                        cell.updateCell(
-                            cell: item,
-                            image: nftImage,
-                            profileLikes: self.presenter.likes,
-                            nftsInCart: self.presenter.nftsInCart
-                        )
-                        cell.delegate = self
-                        cell.layer.cornerRadius = Constants.cornerRadius
+                    cell.updateCell(
+                        cell: item,
+                        image: nftImage,
+                        profileLikes: self.presenter.likes,
+                        nftsInCart: self.presenter.nftsInCart
+                    )
+                    cell.delegate = self
+                    cell.layer.cornerRadius = Constants.cornerRadius
 
                 case .failure(let error):
                     let logMessage =
@@ -417,4 +417,3 @@ extension NFTCollectionViewController {
         }
     }
 }
-
