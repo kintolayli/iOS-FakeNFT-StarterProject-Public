@@ -9,6 +9,7 @@
 "Error.loadingCartError" = "Ошибка загрузки NFT в корзине";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+"Loading" = "Загрузка";
 
 "Alert.ok" = "OK";
 
@@ -18,3 +19,4 @@
 "CatalogController.sortNFT.sortTitle" = "Сортировка";
 
 "NFTCollectionViewController.collectionAuthorLabel" = "Автор коллекции: ";
+"NFTCollectionViewCell.getCurrency.ETH" = "ETH";

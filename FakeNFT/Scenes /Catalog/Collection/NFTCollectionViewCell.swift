@@ -22,7 +22,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
 
-    lazy var likeButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
 
         let heartImage = UIImage(systemName: "heart.fill")
@@ -57,7 +57,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
 
-    lazy var cartButton: UIButton = {
+    private lazy var cartButton: UIButton = {
         let button = UIButton(type: .system)
 
         button.setImage(Asset.cartAdd.image, for: .normal)
@@ -92,7 +92,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        [mainImageView, likeButton, ratingStackView, cartButton, titleLabel, priceLabel].forEach {
+        [cartButton, mainImageView, likeButton, ratingStackView, titleLabel, priceLabel].forEach {
             contentView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -103,9 +103,9 @@ class NFTCollectionViewCell: UICollectionViewCell {
             mainImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             mainImageView.heightAnchor.constraint(equalTo: mainImageView.widthAnchor),
 
-            likeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 9),
-            likeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -9),
-            likeButton.widthAnchor.constraint(equalToConstant: 28),
+            likeButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            likeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            likeButton.widthAnchor.constraint(equalToConstant: 40),
             likeButton.heightAnchor.constraint(equalTo: likeButton.widthAnchor),
 
             ratingStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -118,8 +118,8 @@ class NFTCollectionViewCell: UICollectionViewCell {
             priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
 
-            cartButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor, constant: -11),
-            cartButton.topAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: 35),
+            cartButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor),
+            cartButton.topAnchor.constraint(equalTo: ratingStackView.bottomAnchor)
         ])
 
         likeButton.addTarget(self, action: #selector(likeButtonDidTap), for: .touchUpInside)
@@ -127,13 +127,18 @@ class NFTCollectionViewCell: UICollectionViewCell {
     }
 
     @objc
-    func likeButtonDidTap() {
+    private func likeButtonDidTap() {
         delegate?.likeButtonDidTap(self)
     }
 
     @objc
-    func cartButtonDidTap() {
+    private func cartButtonDidTap() {
         delegate?.cartButtonDidTap(self)
+    }
+
+    @objc
+    private func likeButtonCartDidTap() {
+        print("likeButtonCartDidTap")
     }
 
     required init?(coder: NSCoder) {
@@ -151,11 +156,11 @@ class NFTCollectionViewCell: UICollectionViewCell {
         likeButton.isHidden = true
 
         titleLabel.addShimmer()
-        titleLabel.text = "loading"
+        titleLabel.text = L10n.loading
         titleLabel.textColor = .segmentInactive
 
         priceLabel.addShimmer()
-        priceLabel.text = "loading"
+        priceLabel.text = L10n.loading
         priceLabel.textColor = .segmentInactive
     }
 
@@ -173,23 +178,23 @@ class NFTCollectionViewCell: UICollectionViewCell {
         priceLabel.textColor = Asset.ypBlack.color
     }
 
-    func clearRating() {
+    private func clearRating() {
         for item in 0..<5 {
             ratingStackView.arrangedSubviews[item].tintColor = Asset.ypLightGrey.color
         }
     }
 
-    func setRating(ratingCount: Int) {
+    private func setRating(ratingCount: Int) {
         for item in 0..<ratingCount {
             ratingStackView.arrangedSubviews[item].tintColor = Asset.ypYellow.color
         }
     }
 
-    func getCurrentCurrency() -> String {
-        return "ETH"
+    private func getCurrentCurrency() -> String {
+        return L10n.NFTCollectionViewCell.GetCurrency.eth
     }
 
-    func clearCell() {
+    private func clearCell() {
         clearRating()
         likeButton.tintColor = Asset.ypWhite.color
         cartButton.setImage(Asset.cartAdd.image, for: .normal)
@@ -222,6 +227,36 @@ class NFTCollectionViewCell: UICollectionViewCell {
             cartButton.setImage(Asset.cartDelete.image, for: .normal)
         } else {
             cartButton.setImage(Asset.cartAdd.image, for: .normal)
+        }
+    }
+
+    func animateCartButton() {
+        animateButton(cartButton)
+    }
+
+    func removeAnimateCartButton() {
+        cartButton.layer.removeAllAnimations()
+    }
+
+    func animateLikeButton() {
+        animateButton(likeButton)
+    }
+
+    func removeAnimateLikeButton() {
+        likeButton.layer.removeAllAnimations()
+    }
+
+    private func animateButton(_ button: UIButton) {
+        UIView.modifyAnimations(withRepeatCount: 4, autoreverses: true) {
+            UIView.animate(withDuration: 0.1, animations: {
+                button.alpha = 0.5
+                button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    button.alpha = 1.0
+                    button.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                }
+            }
         }
     }
 }

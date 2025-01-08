@@ -56,8 +56,11 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
         setupUI()
         presenter.viewController = self
-        presenter.loadInitialData()
 
+        UIBlockingProgressHUD.show()
+        presenter.loadInitialData { _ in
+            UIBlockingProgressHUD.dismiss()
+        }
         applySnapshot()
     }
 
@@ -94,27 +97,18 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
     private func applySnapshot(animatingDifferences: Bool = true) {
         var snapshot = NSDiffableDataSourceSnapshot<LoadingSectionModel, NFTCollectionModel>()
+        let isLoading = presenter.getLoadingStatus()
 
-        if presenter.isLoading {
+        if isLoading {
             snapshot.appendSections([.loading])
-            let placeholders = (0..<Constants.placeholdersCount).map { _ in
-                NFTCollectionModel(createdAt: "", name: "", cover: URL(fileURLWithPath: ""), nfts: [UUID()], description: "", author: "", id: UUID())
-            }
+
+            let placeholders = presenter.createPlaceholderCollections()
             snapshot.appendItems(placeholders, toSection: .loading)
         } else {
             snapshot.deleteSections([.loading])
             snapshot.appendSections([.data])
-            let items = presenter.collections.map { collection in
-                NFTCollectionModel(
-                    createdAt: collection.createdAt,
-                    name: collection.name,
-                    cover: collection.cover,
-                    nfts: collection.nfts,
-                    description: collection.description,
-                    author: collection.author,
-                    id: collection.id
-                )
-            }
+
+            let items = presenter.createCollections()
             snapshot.appendItems(items, toSection: .data)
         }
 
@@ -129,7 +123,9 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
 extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.isLoading ? Constants.placeholdersCount : presenter.collections.count
+        let collections = presenter.getCollections()
+        let isLoading = presenter.getLoadingStatus()
+        return isLoading ? Constants.placeholdersCount : collections.count
     }
 
     func configureCell(_ cell: CatalogTableViewCell, _ item: NFTCollectionModel) {
@@ -137,7 +133,9 @@ extension CatalogViewController: UITableViewDelegate {
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
 
-        if presenter.isLoading {
+        let isLoading = presenter.getLoadingStatus()
+
+        if isLoading {
             cell.startShimmering()
         } else {
             cell.stopShimmering()
@@ -180,10 +178,11 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let selectedCollection = presenter.collections[indexPath.row]
+        let selectedCollection = presenter.getCollection(indexPath: indexPath)
         let viewController = NFTCollectionViewController(
-            currentCollection: selectedCollection,
-            presenter: NFTCollectionPresenter())
+            presenter: NFTCollectionPresenter(currentCollection: selectedCollection),
+            collection: selectedCollection
+        )
 
         navigationController?.pushViewController(viewController, animated: true)
     }

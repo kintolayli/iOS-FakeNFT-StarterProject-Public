@@ -18,8 +18,6 @@ protocol NFTCollectionViewControllerProtocol: AnyObject {
 }
 
 class NFTCollectionViewController: UIViewController, NFTCollectionViewControllerProtocol {
-    private let currentCollection: NFTCollectionModel
-    private var profileId = 1
     var presenter: NFTCollectionPresenterProtocol
 
     private lazy var imageView: UIImageView = {
@@ -34,7 +32,6 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
     private lazy var collectionTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .headline3
-        label.text = currentCollection.name.capitalized
         label.textColor = .label
         label.textAlignment = .center
         return label
@@ -51,7 +48,6 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
     private lazy var collectionAuthorLinkButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(currentCollection.author.capitalized, for: .normal)
         button.setTitleColor(.systemBlue, for: .normal)
         button.titleLabel?.font = .caption1
         button.contentHorizontalAlignment = .leading
@@ -71,7 +67,6 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
     private lazy var collectionDescriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .caption2
-        label.text = currentCollection.description.capitalized
         label.numberOfLines = 0
         label.textColor = .label
         label.textAlignment = .left
@@ -111,7 +106,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
             default:
                 break
             }
-            //
+
             self.configureCell(cell, itemIdentifier)
             return cell
         }
@@ -128,18 +123,20 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
     }()
 
     private lazy var params: GeometricParams = {
-        let params = GeometricParams(cellCount: 3, leftInset: 0, rightInset: 0, cellSpacing: 9)
+        let params = GeometricParams(cellCount: 3, leftInset: 0, rightInset: 0, topInset: 10, bottomInset: 10, cellSpacing: 9)
         return params
     }()
 
-    init(
-        currentCollection: NFTCollectionModel,
-        presenter: NFTCollectionPresenterProtocol
-    ) {
-        self.currentCollection = currentCollection
+    init(presenter: NFTCollectionPresenterProtocol, collection: NFTCollectionModel) {
         self.presenter = presenter
-
         super.init(nibName: nil, bundle: nil)
+
+        collectionTitleLabel.text = collection.name.capitalized
+        collectionAuthorLinkButton.setTitle(collection.author.capitalized, for: .normal)
+        collectionDescriptionLabel.text = collection.description.capitalized
+
+        let coverImageView = loadKingfisherImage(url: collection.cover)
+        imageView.image = coverImageView
     }
 
     required init?(coder: NSCoder) {
@@ -150,19 +147,19 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
         super.viewDidLoad()
 
         setupUI()
-
         presenter.viewController = self
-        presenter.loadLikes(profileId: profileId)
-        presenter.loadNFTsInCart(profileId: profileId)
-        // TODO: - Сервер поломан - в некоторых коллекциях присылается несколько одинаковых NFT с одинаковыми Id, и diffable data source ломается. Строчка ниже это костыль чтобы временно эту проблему решить.
-        let nftsUnique = Array(Set(currentCollection.nfts))
-        presenter.loadInitialData(nftIds: nftsUnique)
 
-        applySnapshot()
+        UIBlockingProgressHUD.show()
+        presenter.loadInitialData { _ in
+            UIBlockingProgressHUD.dismiss()
+        }
+        updateView()
     }
 
     private func setupUI() {
         view.backgroundColor = .systemBackground
+        let nfts = presenter.getNfts()
+        let scrollViewAddSpace = CGFloat(Int(ceil(Double(nfts.count) / 3.0))) * 200
 
         [scrollView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -190,7 +187,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 900 + CGFloat(Int(ceil(Double(presenter.nfts.count) / 3.0))) * 200),
+            contentView.heightAnchor.constraint(equalToConstant: 900 + scrollViewAddSpace),
 
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -216,15 +213,12 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
         collectionView.scrollIndicatorInsets = collectionView.contentInset
 
         scrollView.contentInset = UIEdgeInsets(top: -100, left: 0, bottom: 0, right: 0)
-
-        let coverImageView = loadKingfisherImage(url: currentCollection.cover)
-        imageView.image = coverImageView
     }
 
     @objc
     func authorLinkButtonDidTap() {
         let webViewViewController = WebViewViewController()
-        let webViewPresenter = WebViewPresenter(stringUrl: "https://practicum.yandex.ru/ios-developer/")
+        let webViewPresenter = WebViewPresenter(stringUrl: Constants.practiicunIosDeveloperUrl)
         webViewViewController.presenter = webViewPresenter
         webViewPresenter.view = webViewViewController
 
@@ -238,7 +232,14 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
         let imageView = UIImageView()
         imageView.kf.setImage(
             with: url,
-            options: [.processor(processor), .transition(.fade(0.3))],
+            placeholder: UIImage.from(
+                color: Asset.ypLightGrey.color,
+                size: CGSize(
+                    width: Constants.collectionTitleImagePlaceholderWidth,
+                    height: Constants.collectionTitleImagePlaceholderHeight
+                )
+            ),
+            options: [.processor(processor), .transition(.fade(Constants.animationDuration))],
             completionHandler: { result in
                 switch result {
                 case .success(_):
@@ -251,46 +252,33 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
         return imageView.image ?? UIImage.from(color: Asset.ypLightGrey.color)
     }
 
-    private func applySnapshot(animatingDifferences: Bool = true) {
+    private func applySnapshot(animatingDifferences: Bool = true, completion: @escaping (Bool) -> Void) {
         var snapshot = NSDiffableDataSourceSnapshot<LoadingSectionModel, NFTModel>()
 
-        if presenter.isLoading {
+        let isLoading = presenter.getLoadingStatus()
+
+        if isLoading {
             snapshot.appendSections([.loading])
-            let placeholders = (0..<Constants.placeholdersCount).map { _ in
-                NFTModel(
-                    createdAt: "",
-                    name: "",
-                    images: [URL(fileURLWithPath: "")],
-                    rating: 5,
-                    description: "",
-                    price: 0.00,
-                    author: URL(fileURLWithPath: ""),
-                    id: UUID())
-            }
+
+            let placeholders = presenter.createPlaceholderNFTs()
             snapshot.appendItems(placeholders, toSection: .loading)
         } else {
             snapshot.deleteSections([.loading])
             snapshot.appendSections([.data])
-            let items = presenter.nfts.map { nft in
-                NFTModel(
-                    createdAt: nft.createdAt,
-                    name: nft.name,
-                    images: nft.images,
-                    rating: nft.rating,
-                    description: nft.description,
-                    price: nft.price,
-                    author: nft.author,
-                    id: nft.id
-                )
-            }
+
+            let items = presenter.createNFTs()
             snapshot.appendItems(items, toSection: .data)
         }
 
         dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
+        completion(true)
     }
 
     func updateView() {
-        applySnapshot()
+        UIBlockingProgressHUD.show()
+        applySnapshot { _ in
+            UIBlockingProgressHUD.dismiss()
+        }
     }
 
     func reloadData() {
@@ -300,13 +288,16 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
 extension NFTCollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter.nfts.count
+        return presenter.getNfts().count
     }
 
     func configureCell(_ cell: NFTCollectionViewCell, _ item: NFTModel) {
         cell.backgroundColor = .clear
 
-        if presenter.isLoading {
+        let cellData = presenter.getCellData()
+        let isLoading = presenter.getLoadingStatus()
+
+        if isLoading {
             cell.startShimmering()
         } else {
             cell.stopShimmering()
@@ -325,8 +316,8 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
                     cell.updateCell(
                         cell: item,
                         image: nftImage,
-                        profileLikes: self.presenter.likes,
-                        nftsInCart: self.presenter.nftsInCart
+                        profileLikes: cellData.likes,
+                        nftsInCart: cellData.nftsInCart
                     )
                     cell.delegate = self
                     cell.layer.cornerRadius = Constants.cornerRadius
@@ -344,7 +335,8 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let nftViewController = NFTCardViewController(currentNFT: presenter.nfts[indexPath.row])
+        let currentNft = presenter.getNft(indexPath: indexPath)
+        let nftViewController = NFTCardViewController(currentNFT: currentNft)
         navigationController?.pushViewController(nftViewController, animated: true)
     }
 }
@@ -365,7 +357,7 @@ extension NFTCollectionViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: params.leftInset, bottom: 10, right: params.rightInset)
+        return UIEdgeInsets(top: params.topInset, left: params.leftInset, bottom: params.bottomInset, right: params.rightInset)
     }
 }
 
@@ -378,41 +370,31 @@ extension NFTCollectionViewController {
 
 extension NFTCollectionViewController {
     func likeButtonDidTap(_ cell: NFTCollectionViewCell) {
-        animateButton(cell.likeButton)
+        UIBlockingProgressHUD.show()
+        cell.animateLikeButton()
 
         guard let indexPath = collectionView.indexPath(for: cell)  else { return }
-        let nftId = presenter.nfts[indexPath.row].id
+        let nftId = presenter.getNft(indexPath: indexPath).id
 
-        presenter.sendLike(profileId: profileId, nftId: nftId) { result in
+        presenter.sendLike(nftId: nftId) { result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                cell.likeButton.layer.removeAllAnimations()
+                cell.removeAnimateLikeButton()
+                UIBlockingProgressHUD.dismiss()
             }
         }
     }
 
     func cartButtonDidTap(_ cell: NFTCollectionViewCell) {
-        animateButton(cell.cartButton)
+        UIBlockingProgressHUD.show()
+        cell.animateCartButton()
 
         guard let indexPath = collectionView.indexPath(for: cell)  else { return }
-        let nftId = presenter.nfts[indexPath.row].id
+        let nftId = presenter.getNft(indexPath: indexPath).id
 
-        presenter.sendNFTToCart(profileId: profileId, nftId: nftId) { result in
+        presenter.sendNFTToCart(nftId: nftId) { result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                cell.cartButton.layer.removeAllAnimations()
-            }
-        }
-    }
-
-    private func animateButton(_ button: UIButton) {
-        UIView.modifyAnimations(withRepeatCount: 4, autoreverses: true) {
-            UIView.animate(withDuration: 0.1, animations: {
-                button.alpha = 0.5
-                button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    button.alpha = 1.0
-                    button.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                }
+                cell.removeAnimateCartButton()
+                UIBlockingProgressHUD.dismiss()
             }
         }
     }
