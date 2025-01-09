@@ -371,30 +371,36 @@ extension NFTCollectionViewController {
 extension NFTCollectionViewController {
     func likeButtonDidTap(_ cell: NFTCollectionViewCell) {
         UIBlockingProgressHUD.show()
-        cell.animateLikeButton()
+        let isLoading = presenter.getLoadingStatus()
+        if !isLoading {
+            cell.animateLikeButton()
 
-        guard let indexPath = collectionView.indexPath(for: cell)  else { return }
-        let nftId = presenter.getNft(indexPath: indexPath).id
+            guard let indexPath = collectionView.indexPath(for: cell)  else { return }
+            let nftId = presenter.getNft(indexPath: indexPath).id
 
-        presenter.sendLike(nftId: nftId) { result in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                cell.removeAnimateLikeButton()
-                UIBlockingProgressHUD.dismiss()
+            presenter.sendLike(nftId: nftId) { result in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    cell.removeAnimateLikeButton()
+                    UIBlockingProgressHUD.dismiss()
+                }
             }
         }
     }
 
     func cartButtonDidTap(_ cell: NFTCollectionViewCell) {
         UIBlockingProgressHUD.show()
-        cell.animateCartButton()
+        let isLoading = presenter.getLoadingStatus()
+        if !isLoading {
+            cell.animateCartButton()
 
-        guard let indexPath = collectionView.indexPath(for: cell)  else { return }
-        let nftId = presenter.getNft(indexPath: indexPath).id
+            guard let indexPath = collectionView.indexPath(for: cell)  else { return }
+            let nftId = presenter.getNft(indexPath: indexPath).id
 
-        presenter.sendNFTToCart(nftId: nftId) { result in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                cell.removeAnimateCartButton()
-                UIBlockingProgressHUD.dismiss()
+            presenter.sendNFTToCart(nftId: nftId) { result in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    cell.removeAnimateCartButton()
+                    UIBlockingProgressHUD.dismiss()
+                }
             }
         }
     }

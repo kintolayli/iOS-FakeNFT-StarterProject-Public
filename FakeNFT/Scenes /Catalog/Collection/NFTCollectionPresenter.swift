@@ -48,13 +48,11 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
 
     func loadLikes() {
         likeService.fetchLikes(profileId: profileId) { [ weak self ] result in
-            guard let self = self else { return }
-
             switch result {
             case .success(let likedNFT):
-                likes = likedNFT
-                viewController?.updateView()
-                viewController?.reloadData()
+                self?.likes = likedNFT
+                self?.viewController?.updateView()
+                self?.viewController?.reloadData()
             case .failure(_):
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
@@ -63,18 +61,16 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                         AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
                     ]
                 )
-                viewController?.showAlert(with: alertModel)
+                self?.viewController?.showAlert(with: alertModel)
             }
         }
     }
 
     func sendLike(nftId: UUID, completion: @escaping (Bool) -> Void) {
         likeService.sendLike(profileId: profileId, nftId: nftId) { [ weak self ] result in
-            guard let self = self else { return }
-
             switch result {
             case .success(_):
-                loadLikes()
+                self?.loadLikes()
                 completion(true)
 
             case .failure(_):
@@ -86,20 +82,18 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                     ]
                 )
                 completion(true)
-                viewController?.showAlert(with: alertModel)
+                self?.viewController?.showAlert(with: alertModel)
             }
         }
     }
 
     func loadNFTsInCart() {
         cartService.fetchNFTInCart(profileId: profileId) { [ weak self ] result in
-            guard let self = self else { return }
-
             switch result {
             case .success(let nfts):
-                nftsInCart = nfts
-                viewController?.updateView()
-                viewController?.reloadData()
+                self?.nftsInCart = nfts
+                self?.viewController?.updateView()
+                self?.viewController?.reloadData()
             case .failure(_):
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
@@ -108,18 +102,16 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                         AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
                     ]
                 )
-                viewController?.showAlert(with: alertModel)
+                self?.viewController?.showAlert(with: alertModel)
             }
         }
     }
 
     func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void) {
         cartService.sendNFTToCart(profileId: profileId, nftId: nftId) { [ weak self ] result in
-            guard let self = self else { return }
-
             switch result {
             case .success(_):
-                loadNFTsInCart()
+                self?.loadNFTsInCart()
                 completion(true)
 
             case .failure(_):
@@ -131,24 +123,22 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                     ]
                 )
                 completion(true)
-                viewController?.showAlert(with: alertModel)
+                self?.viewController?.showAlert(with: alertModel)
             }
         }
     }
 
     func loadNfts(nftIds: [UUID]) {
         nftCollectionService.fetchNFT(ids: nftIds) { [weak self] result in
-            guard let self = self else { return }
-
             switch result {
             case .success(let nfts):
-                isLoading = false
+                self?.isLoading = false
 
-                self.nfts = nfts
-                viewController?.updateView()
+                self?.nfts = nfts
+                self?.viewController?.updateView()
             case .failure:
-                isLoading = false
-                
+                self?.isLoading = false
+
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
                     message: L10n.Error.unknown,
@@ -156,7 +146,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                         AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
                     ]
                 )
-                viewController?.showAlert(with: alertModel)
+                self?.viewController?.showAlert(with: alertModel)
             }
         }
     }
