@@ -36,10 +36,8 @@ final class NFTCollectionService {
                 switch result {
                 case .success(let nft):
                     fetchedNFT.append(nft)
-                    completion(.success(fetchedNFT))
                 case .failure(let error):
                     errors.append(error)
-                    completion(.failure(error))
                 }
                 dispatchGroup.leave()
             }

@@ -136,11 +136,6 @@ class NFTCollectionViewCell: UICollectionViewCell {
         delegate?.cartButtonDidTap(self)
     }
 
-    @objc
-    private func likeButtonCartDidTap() {
-        print("likeButtonCartDidTap")
-    }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
