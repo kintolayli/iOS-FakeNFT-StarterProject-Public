@@ -18,15 +18,15 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         return tableView
     }()
 
-    private lazy var dataSource: UITableViewDiffableDataSource<CatalogSection, NFTCollectionModel> = {
-        UITableViewDiffableDataSource<CatalogSection, NFTCollectionModel>(tableView: tableView) { tableView, indexPath, itemIdentifier in
+    private lazy var dataSource: UITableViewDiffableDataSource<LoadingSectionModel, NFTCollectionModel> = {
+        UITableViewDiffableDataSource<LoadingSectionModel, NFTCollectionModel>(tableView: tableView) { tableView, indexPath, itemIdentifier in
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: CatalogTableViewCell.reuseIdentifier
             ) as? CatalogTableViewCell else {
                 return UITableViewCell()
             }
 
-            switch CatalogSection(rawValue: indexPath.section) {
+            switch LoadingSectionModel(rawValue: indexPath.section) {
             case .loading:
                 cell.startShimmering()
             case .data:
@@ -56,8 +56,11 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
         setupUI()
         presenter.viewController = self
-        presenter.loadInitialData()
 
+        UIBlockingProgressHUD.show()
+        presenter.loadInitialData { _ in
+            UIBlockingProgressHUD.dismiss()
+        }
         applySnapshot()
     }
 
@@ -72,7 +75,7 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
         NSLayoutConstraint.activate([
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
 
@@ -93,28 +96,19 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
     }
 
     private func applySnapshot(animatingDifferences: Bool = true) {
-        var snapshot = NSDiffableDataSourceSnapshot<CatalogSection, NFTCollectionModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<LoadingSectionModel, NFTCollectionModel>()
+        let isLoading = presenter.getLoadingStatus()
 
-        if presenter.isLoading {
+        if isLoading {
             snapshot.appendSections([.loading])
-            let placeholders = (0..<Constants.placeholdersCount).map { _ in
-                NFTCollectionModel(createdAt: "", name: "", cover: URL(fileURLWithPath: ""), nfts: [UUID()], description: "", author: "", id: UUID())
-            }
+
+            let placeholders = presenter.createPlaceholderCollections()
             snapshot.appendItems(placeholders, toSection: .loading)
         } else {
             snapshot.deleteSections([.loading])
             snapshot.appendSections([.data])
-            let items = presenter.collections.map { collection in
-                NFTCollectionModel(
-                    createdAt: collection.createdAt,
-                    name: collection.name,
-                    cover: collection.cover,
-                    nfts: collection.nfts,
-                    description: collection.description,
-                    author: collection.author,
-                    id: collection.id
-                )
-            }
+
+            let items = presenter.createCollections()
             snapshot.appendItems(items, toSection: .data)
         }
 
@@ -129,7 +123,9 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
 extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.isLoading ? Constants.placeholdersCount : presenter.collections.count
+        let collections = presenter.getCollections()
+        let isLoading = presenter.getLoadingStatus()
+        return isLoading ? Constants.placeholdersCount : collections.count
     }
 
     func configureCell(_ cell: CatalogTableViewCell, _ item: NFTCollectionModel) {
@@ -137,7 +133,9 @@ extension CatalogViewController: UITableViewDelegate {
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
 
-        if presenter.isLoading {
+        let isLoading = presenter.getLoadingStatus()
+
+        if isLoading {
             cell.startShimmering()
         } else {
             cell.stopShimmering()
@@ -151,7 +149,9 @@ extension CatalogViewController: UITableViewDelegate {
                                   options: [.processor(processor)]) { result in
                 switch result {
                 case .success:
-                    let collectionCount = item.nfts.count
+                    // TODO: - Сервер поломан - в некоторых коллекциях присылается несколько одинаковых NFT с одинаковыми Id, и diffable data source ломается. Строчка ниже это костыль чтобы временно эту проблему решить.
+                    let nftsUnique = Array(Set(item.nfts))
+                    let collectionCount = nftsUnique.count
                     let collectionName = item.name
                     let collectionTitle = "\(collectionName) (\(collectionCount))"
 
@@ -178,8 +178,11 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let selectedCollection = presenter.collections[indexPath.row]
-        let viewController = NFTCollectionViewController(currentCollection: selectedCollection)
+        let selectedCollection = presenter.getCollection(indexPath: indexPath)
+        let viewController = NFTCollectionViewController(
+            presenter: NFTCollectionPresenter(currentCollection: selectedCollection),
+            collection: selectedCollection
+        )
 
         navigationController?.pushViewController(viewController, animated: true)
     }

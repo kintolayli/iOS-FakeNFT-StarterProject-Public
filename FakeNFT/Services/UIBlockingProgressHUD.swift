@@ -14,9 +14,7 @@ final class UIBlockingProgressHUD {
     }
 
     static func configure() {
-        ProgressHUD.animationType = .none
-        ProgressHUD.colorHUD = Asset.ypBlack.color
-        ProgressHUD.colorAnimation = .lightGray
+        ProgressHUD.animationType = .barSweepToggle
     }
 
     static func show() {

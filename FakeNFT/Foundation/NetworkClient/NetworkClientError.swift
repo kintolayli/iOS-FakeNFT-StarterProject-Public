@@ -16,4 +16,5 @@ enum NetworkClientError: Error {
     case invalidBaseUrl
     case invalidUrl
     case invalidRequest
+    case invalidRequestBody
 }

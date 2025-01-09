@@ -9,12 +9,18 @@ import Foundation
 
 
 protocol CatalogPresenterProtocol: AnyObject {
-    var collections: [NFTCollectionModel] { get set }
     var viewController: CatalogViewControllerProtocol? { get set }
-    var isLoading: Bool { get set }
 
-    func loadInitialData()
+    var collections: [NFTCollectionModel] { get set }
+
+    func loadInitialData(completion: @escaping (Bool) -> Void)
     func filterButtonTapped()
+    func getCollections() -> [NFTCollectionModel]
+    func getCollection(indexPath: IndexPath) -> NFTCollectionModel
+    func getLoadingStatus() -> Bool
+
+    func createPlaceholderCollections() -> [NFTCollectionModel]
+    func createCollections() -> [NFTCollectionModel]
 }
 
 final class CatalogPresenter: CatalogPresenterProtocol {
@@ -28,7 +34,7 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     init() {
         self.catalogService = CatalogService.shared
         self.sortMethod = CatalogPresenter.loadSortMethod()
-        isLoading = UIBlockingProgressHUD.status()
+        self.isLoading = UIBlockingProgressHUD.status()
     }
 
     func filterButtonTapped() {
@@ -54,23 +60,19 @@ final class CatalogPresenter: CatalogPresenterProtocol {
         viewController?.showAlert(with: alertModel)
     }
 
-    func loadInitialData() {
-        UIBlockingProgressHUD.show()
-
+    func loadInitialData(completion: @escaping (Bool) -> Void) {
         catalogService.fetchCatalog() { [weak self] result in
             guard let self = self else { return }
 
-
             switch result {
             case .success(let collections):
-                UIBlockingProgressHUD.dismiss()
                 isLoading = false
 
                 self.collections = collections
                 self.viewController?.updateView()
                 self.applySortMethod()
+                completion(true)
             case .failure:
-                UIBlockingProgressHUD.dismiss()
                 isLoading = false
 
                 let alertModel = AlertModel(
@@ -81,10 +83,52 @@ final class CatalogPresenter: CatalogPresenterProtocol {
                     ]
                 )
                 viewController?.showAlert(with: alertModel)
+                completion(true)
             }
         }
     }
+
+    func getCollections() -> [NFTCollectionModel] {
+        return collections
+    }
+
+    func getCollection(indexPath: IndexPath) -> NFTCollectionModel {
+        return collections[indexPath.row]
+    }
+
+    func getLoadingStatus() -> Bool {
+        return isLoading
+    }
+
+    func createPlaceholderCollections() -> [NFTCollectionModel] {
+        return (0..<Constants.placeholdersCount).map { _ in
+            NFTCollectionModel(
+                createdAt: "",
+                name: "",
+                cover: URL(fileURLWithPath: ""),
+                nfts: [UUID()],
+                description: "",
+                author: "",
+                id: UUID()
+            )
+        }
+    }
+
+    func createCollections() -> [NFTCollectionModel] {
+        return collections.map { collection in
+            NFTCollectionModel(
+                createdAt: collection.createdAt,
+                name: collection.name,
+                cover: collection.cover,
+                nfts: collection.nfts,
+                description: collection.description,
+                author: collection.author,
+                id: collection.id
+            )
+        }
+    }
 }
+
 
 extension CatalogPresenter {
     private static func loadSortMethod() -> SortMethod {
@@ -106,6 +150,24 @@ extension CatalogPresenter {
     }
 
     private func sortCollectionsByNFTCount() {
+        // TODO: - Сервер поломан - в некоторых коллекциях присылается несколько одинаковых NFT с одинаковыми Id, и diffable data source ломается. Строчка ниже это костыль чтобы временно эту проблему решить.
+        collections = collections.map { collection in
+            let uniqueNFTsIds = Set(collection.nfts.map { $0 })
+
+            let uniqueNFTs = uniqueNFTsIds.compactMap { id in
+                collection.nfts.first { $0 == id }
+            }
+
+            return NFTCollectionModel(
+                createdAt: collection.createdAt,
+                name: collection.name,
+                cover: collection.cover,
+                nfts: uniqueNFTs,
+                description: collection.description,
+                author: collection.author,
+                id: collection.id)
+        }
+
         collections = collections.sorted { $0.nfts.count > $1.nfts.count }
         sortMethod = .byNFTCount
         saveSortMethod()

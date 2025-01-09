@@ -36,13 +36,13 @@ final class CatalogTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
 
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
     }
 
-    public override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse( )
     }
 
@@ -52,7 +52,7 @@ final class CatalogTableViewCell: UITableViewCell {
         cellTitleImage.image = grayImage
 
         cellTitleLabel.addShimmer()
-        cellTitleLabel.text = "loading"
+        cellTitleLabel.text = L10n.loading
         cellTitleLabel.textColor = .segmentInactive
     }
 
