@@ -10,19 +10,19 @@ import Foundation
 
 protocol NFTCollectionPresenterProtocol: AnyObject {
     var viewController: NFTCollectionViewControllerProtocol?  { get set }
-
+    
     func getLoadingStatus() -> Bool
     func getCellData() -> (likes: [UUID], nftsInCart: [UUID])
     func getNfts() -> [NftModel]
     func getNft(indexPath: IndexPath) -> NftModel
-
+    
     func createPlaceholderNFTs() -> [NftModel]
     func createNFTs() -> [NftModel]
-
+    
     func loadInitialData(completion: @escaping (Bool) -> Void)
     func loadLikes()
     func loadNFTsInCart()
-
+    
     func sendLike(nftId: UUID, completion: @escaping (Bool) -> Void)
     func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void)
 }
@@ -37,9 +37,9 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
     private var nftsInCart: [UUID] = []
     private var isLoading: Bool
     private var profileId = 1
-
+    
     weak var viewController: NFTCollectionViewControllerProtocol?
-
+    
     init(currentCollection: NFTCollectionModel) {
         self.currentCollection = currentCollection
         self.nftCollectionService = NFTCollectionService.shared
@@ -47,7 +47,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         self.cartService = NFTCartService.shared
         self.isLoading = UIBlockingProgressHUD.status()
     }
-
+    
     func loadLikes() {
         likeService.fetchLikes(profileId: profileId) { [ weak self ] result in
             switch result {
@@ -67,14 +67,14 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             }
         }
     }
-
+    
     func sendLike(nftId: UUID, completion: @escaping (Bool) -> Void) {
         likeService.sendLike(profileId: profileId, nftId: nftId) { [ weak self ] result in
             switch result {
             case .success(_):
                 self?.loadLikes()
                 completion(true)
-
+                
             case .failure(_):
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
@@ -88,7 +88,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             }
         }
     }
-
+    
     func loadNFTsInCart() {
         cartService.fetchNFTInCart(profileId: profileId) { [ weak self ] result in
             switch result {
@@ -108,14 +108,14 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             }
         }
     }
-
+    
     func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void) {
         cartService.sendNFTToCart(profileId: profileId, nftId: nftId) { [ weak self ] result in
             switch result {
             case .success(_):
                 self?.loadNFTsInCart()
                 completion(true)
-
+                
             case .failure(_):
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
@@ -129,18 +129,18 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             }
         }
     }
-
+    
     func loadNfts(nftIds: [UUID]) {
         nftCollectionService.fetchNFT(ids: nftIds) { [weak self] result in
             switch result {
             case .success(let nfts):
                 self?.isLoading = false
-
+                
                 self?.nfts = nfts
                 self?.viewController?.updateView()
             case .failure:
                 self?.isLoading = false
-
+                
                 let alertModel = AlertModel(
                     title: L10n.Error.title,
                     message: L10n.Error.unknown,
@@ -152,7 +152,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             }
         }
     }
-
+    
     func loadInitialData(completion: @escaping (Bool) -> Void) {
         loadLikes()
         loadNFTsInCart()
@@ -161,7 +161,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         loadNfts(nftIds: nftsUnique)
         completion(true)
     }
-
+    
     func createPlaceholderNFTs() -> [NftModel] {
         return (0..<6).map { nft in
             NftModel(
@@ -176,7 +176,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             )
         }
     }
-
+    
     func createNFTs() -> [NftModel] {
         return nfts.map { nft in
             NftModel(
@@ -191,19 +191,19 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
             )
         }
     }
-
+    
     func getLoadingStatus() -> Bool {
         return isLoading
     }
-
+    
     func getCellData() -> (likes: [UUID], nftsInCart: [UUID]) {
         return (likes: likes, nftsInCart: nftsInCart)
     }
-
+    
     func getNfts() -> [NftModel] {
         return nfts
     }
-
+    
     func getNft(indexPath: IndexPath) -> NftModel {
         return nfts[indexPath.row]
     }

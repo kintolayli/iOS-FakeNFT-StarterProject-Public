@@ -157,7 +157,7 @@ extension CatalogPresenter {
             let uniqueNFTs = uniqueNFTsIds.compactMap { id in
                 collection.nfts.first { $0 == id }
             }
-
+            
             return NFTCollectionModel(
                 createdAt: collection.createdAt,
                 name: collection.name,
