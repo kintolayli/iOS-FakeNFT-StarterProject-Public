@@ -12,11 +12,13 @@ class NFTCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "NFTCollectionViewCell"
     var delegate: NFTCollectionViewControllerProtocol?
 
+    private var animatingButtons: Set<UIButton> = []
+
     private lazy var mainImageView: UIImageView = {
         let imageView = UIImageView()
 
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = Constants.cornerRadius
+        imageView.layer.cornerRadius = Constants.cornerRadius12
         imageView.contentMode = .scaleAspectFill
 
         return imageView
@@ -196,7 +198,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
     }
 
     func updateCell(
-        cell: NFTModel,
+        cell: NftModel,
         image: UIImage,
         profileLikes: [UUID],
         nftsInCart: [UUID]
@@ -226,32 +228,46 @@ class NFTCollectionViewCell: UICollectionViewCell {
     }
 
     func animateCartButton() {
-        animateButton(cartButton)
+        startAnimatingButton(cartButton)
     }
 
     func removeAnimateCartButton() {
-        cartButton.layer.removeAllAnimations()
+        stopAnimatingButton(cartButton)
     }
 
     func animateLikeButton() {
-        animateButton(likeButton)
+        startAnimatingButton(likeButton)
     }
 
     func removeAnimateLikeButton() {
-        likeButton.layer.removeAllAnimations()
+        stopAnimatingButton(likeButton)
     }
 
     private func animateButton(_ button: UIButton) {
-        UIView.modifyAnimations(withRepeatCount: 4, autoreverses: true) {
-            UIView.animate(withDuration: 0.1, animations: {
-                button.alpha = 0.5
-                button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        guard animatingButtons.contains(button) else { return }
+
+        UIView.animate(withDuration: 0.2, animations: {
+            button.alpha = 0.5
+            button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        }) { _ in
+            UIView.animate(withDuration: 0.2, animations: {
+                button.alpha = 1.0
+                button.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
             }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    button.alpha = 1.0
-                    button.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-                }
+                self.animateButton(button)
             }
         }
+    }
+
+    func startAnimatingButton(_ button: UIButton) {
+        animatingButtons.insert(button)
+        animateButton(button)
+    }
+
+    func stopAnimatingButton(_ button: UIButton) {
+        animatingButtons.remove(button)
+        button.layer.removeAllAnimations()
+        button.alpha = 1.0
+        button.transform = .identity
     }
 }

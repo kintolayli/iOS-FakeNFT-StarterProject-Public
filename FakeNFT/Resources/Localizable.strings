@@ -20,3 +20,8 @@
 
 "NFTCollectionViewController.collectionAuthorLabel" = "Автор коллекции: ";
 "NFTCollectionViewCell.getCurrency.ETH" = "ETH";
+
+"NFTCardViewController.priceNameLabel" = "Цена";
+"NFTCardViewController.addToCartButton" = "Добавить в корзину";
+"NFTCardViewController.inCartButton" = "В корзине";
+"NFTCardViewController.sellerButton" = "Перейти на сайт продавца";

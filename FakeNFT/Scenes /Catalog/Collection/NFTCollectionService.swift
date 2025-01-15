@@ -17,8 +17,8 @@ final class NFTCollectionService {
 
     private init() {}
 
-    func fetchNFT(ids: [UUID], _ completion: @escaping (Result<[NFTModel], Error>) -> Void) {
-        var fetchedNFT: [NFTModel] = []
+    func fetchNFT(ids: [UUID], _ completion: @escaping (Result<[NftModel], Error>) -> Void) {
+        var fetchedNFT: [NftModel] = []
         var errors: [Error] = []
         let dispatchGroup = DispatchGroup()
 
@@ -31,7 +31,7 @@ final class NFTCollectionService {
                 continue
             }
 
-            let task = urlSession.objectTask(for: request) { (result: Result<NFTModel, Error>) in
+            let task = urlSession.objectTask(for: request) { (result: Result<NftModel, Error>) in
 
                 switch result {
                 case .success(let nft):

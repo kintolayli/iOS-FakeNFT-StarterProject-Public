@@ -13,13 +13,15 @@ protocol NFTCollectionPresenterProtocol: AnyObject {
 
     func getLoadingStatus() -> Bool
     func getCellData() -> (likes: [UUID], nftsInCart: [UUID])
-    func getNfts() -> [NFTModel]
-    func getNft(indexPath: IndexPath) -> NFTModel
+    func getNfts() -> [NftModel]
+    func getNft(indexPath: IndexPath) -> NftModel
 
-    func createPlaceholderNFTs() -> [NFTModel]
-    func createNFTs() -> [NFTModel]
+    func createPlaceholderNFTs() -> [NftModel]
+    func createNFTs() -> [NftModel]
 
     func loadInitialData(completion: @escaping (Bool) -> Void)
+    func loadLikes()
+    func loadNFTsInCart()
 
     func sendLike(nftId: UUID, completion: @escaping (Bool) -> Void)
     func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void)
@@ -30,7 +32,7 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
     private let likeService: NFTLikeService
     private let cartService: NFTCartService
     private let currentCollection: NFTCollectionModel
-    private var nfts: [NFTModel] = []
+    private var nfts: [NftModel] = []
     private var likes: [UUID] = []
     private var nftsInCart: [UUID] = []
     private var isLoading: Bool
@@ -160,9 +162,9 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         completion(true)
     }
 
-    func createPlaceholderNFTs() -> [NFTModel] {
+    func createPlaceholderNFTs() -> [NftModel] {
         return (0..<6).map { nft in
-            NFTModel(
+            NftModel(
                 createdAt: "",
                 name: "",
                 images: [URL(fileURLWithPath: "")],
@@ -175,9 +177,9 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         }
     }
 
-    func createNFTs() -> [NFTModel] {
+    func createNFTs() -> [NftModel] {
         return nfts.map { nft in
-            NFTModel(
+            NftModel(
                 createdAt: nft.createdAt,
                 name: nft.name,
                 images: nft.images,
@@ -198,11 +200,11 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
         return (likes: likes, nftsInCart: nftsInCart)
     }
 
-    func getNfts() -> [NFTModel] {
+    func getNfts() -> [NftModel] {
         return nfts
     }
 
-    func getNft(indexPath: IndexPath) -> NFTModel {
+    func getNft(indexPath: IndexPath) -> NftModel {
         return nfts[indexPath.row]
     }
 }

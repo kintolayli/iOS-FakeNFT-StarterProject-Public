@@ -10,6 +10,7 @@ protocol CatalogViewControllerProtocol: AnyObject {
 
 final class CatalogViewController: UIViewController, CatalogViewControllerProtocol {
     var presenter: CatalogPresenterProtocol
+    private let servicesAssembly: ServicesAssembly
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -42,7 +43,8 @@ final class CatalogViewController: UIViewController, CatalogViewControllerProtoc
 
     let filterButton = UIButton(type: .custom)
 
-    init(presenter: CatalogPresenterProtocol) {
+    init(presenter: CatalogPresenterProtocol, servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -142,7 +144,7 @@ extension CatalogViewController: UITableViewDelegate {
 
             let NFTCollectionCoverImageURL = item.cover
             let imageView = UIImageView()
-            let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius)
+            let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius12)
             imageView.kf.indicatorType = .activity
             imageView.kf.setImage(with: NFTCollectionCoverImageURL,
                                   placeholder: .none,
@@ -181,7 +183,8 @@ extension CatalogViewController: UITableViewDelegate {
         let selectedCollection = presenter.getCollection(indexPath: indexPath)
         let viewController = NFTCollectionViewController(
             presenter: NFTCollectionPresenter(currentCollection: selectedCollection),
-            collection: selectedCollection
+            collection: selectedCollection,
+            servicesAssembly: servicesAssembly
         )
 
         navigationController?.pushViewController(viewController, animated: true)

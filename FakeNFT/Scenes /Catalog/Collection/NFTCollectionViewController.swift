@@ -19,11 +19,12 @@ protocol NFTCollectionViewControllerProtocol: AnyObject {
 
 class NFTCollectionViewController: UIViewController, NFTCollectionViewControllerProtocol {
     var presenter: NFTCollectionPresenterProtocol
+    private let servicesAssembly: ServicesAssembly
 
     private lazy var imageView: UIImageView = {
         let view = UIImageView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = Constants.cornerRadius
+        view.layer.cornerRadius = Constants.cornerRadius12
         view.contentMode = .scaleAspectFit
         view.kf.indicatorType = .activity
         return view
@@ -90,8 +91,8 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
         return collectionView
     }()
 
-    private lazy var dataSource: UICollectionViewDiffableDataSource<LoadingSectionModel, NFTModel> = {
-        UICollectionViewDiffableDataSource<LoadingSectionModel, NFTModel>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+    private lazy var dataSource: UICollectionViewDiffableDataSource<LoadingSectionModel, NftModel> = {
+        UICollectionViewDiffableDataSource<LoadingSectionModel, NftModel>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: NFTCollectionViewCell.reuseIdentifier, for: indexPath
             ) as? NFTCollectionViewCell else {
@@ -127,8 +128,9 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
         return params
     }()
 
-    init(presenter: NFTCollectionPresenterProtocol, collection: NFTCollectionModel) {
+    init(presenter: NFTCollectionPresenterProtocol, collection: NFTCollectionModel, servicesAssembly: ServicesAssembly) {
         self.presenter = presenter
+        self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
 
         collectionTitleLabel.text = collection.name.capitalized
@@ -141,6 +143,13 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        presenter.loadLikes()
+        presenter.loadNFTsInCart()
     }
 
     override func viewDidLoad() {
@@ -227,7 +236,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
     func loadKingfisherImage(url: URL) -> UIImage {
         UIBlockingProgressHUD.show()
-        let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius)
+        let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius12)
 
         let imageView = UIImageView()
         imageView.kf.setImage(
@@ -253,7 +262,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
     }
 
     private func applySnapshot(animatingDifferences: Bool = true, completion: @escaping (Bool) -> Void) {
-        var snapshot = NSDiffableDataSourceSnapshot<LoadingSectionModel, NFTModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<LoadingSectionModel, NftModel>()
 
         let isLoading = presenter.getLoadingStatus()
 
@@ -291,7 +300,7 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
         return presenter.getNfts().count
     }
 
-    func configureCell(_ cell: NFTCollectionViewCell, _ item: NFTModel) {
+    func configureCell(_ cell: NFTCollectionViewCell, _ item: NftModel) {
         cell.backgroundColor = .clear
 
         let cellData = presenter.getCellData()
@@ -304,7 +313,7 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
 
             let NFTCollectionCoverImageURL = item.images[0]
             let imageView = UIImageView()
-            let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius)
+            let processor = RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius12)
             imageView.kf.indicatorType = .activity
             imageView.kf.setImage(with: NFTCollectionCoverImageURL,
                                   placeholder: .none,
@@ -320,7 +329,7 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
                         nftsInCart: cellData.nftsInCart
                     )
                     cell.delegate = self
-                    cell.layer.cornerRadius = Constants.cornerRadius
+                    cell.layer.cornerRadius = Constants.cornerRadius12
 
                 case .failure(let error):
                     let logMessage =
@@ -336,7 +345,12 @@ extension NFTCollectionViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let currentNft = presenter.getNft(indexPath: indexPath)
-        let nftViewController = NFTCardViewController(currentNFT: currentNft)
+        let nfts = presenter.getNfts()
+        guard let currentCollectionTitle = collectionTitleLabel.text else { return }
+
+        let presenter = NFTCardPresenter(currentNFT: currentNft, currentCollectionTitle: currentCollectionTitle, nfts: nfts)
+
+        let nftViewController = NFTCardViewController(presenter: presenter, servicesAssembly: servicesAssembly)
         navigationController?.pushViewController(nftViewController, animated: true)
     }
 }
@@ -345,7 +359,7 @@ extension NFTCollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - params.paddingWidth
         let cellWidth = availableWidth / CGFloat(params.cellCount)
-        return CGSize(width: cellWidth, height: 192)
+        return CGSize(width: cellWidth, height: Constants.NFTCollectionViewControllerCellHeight)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -371,8 +385,6 @@ extension NFTCollectionViewController {
 extension NFTCollectionViewController {
     func likeButtonDidTap(_ cell: NFTCollectionViewCell) {
         UIBlockingProgressHUD.show()
-        let isLoading = presenter.getLoadingStatus()
-        if !isLoading {
             cell.animateLikeButton()
 
             guard let indexPath = collectionView.indexPath(for: cell)  else { return }
@@ -384,13 +396,10 @@ extension NFTCollectionViewController {
                     UIBlockingProgressHUD.dismiss()
                 }
             }
-        }
     }
 
     func cartButtonDidTap(_ cell: NFTCollectionViewCell) {
         UIBlockingProgressHUD.show()
-        let isLoading = presenter.getLoadingStatus()
-        if !isLoading {
             cell.animateCartButton()
 
             guard let indexPath = collectionView.indexPath(for: cell)  else { return }
@@ -402,6 +411,5 @@ extension NFTCollectionViewController {
                     UIBlockingProgressHUD.dismiss()
                 }
             }
-        }
     }
 }

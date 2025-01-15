@@ -56,6 +56,10 @@ final class NftDetailViewController: UIViewController {
         view.backgroundColor = .white
         setupLayout()
         presenter.viewDidLoad()
+
+//        let currentNft = presenter.getCurrentNft()
+//        let cellModels = currentNft.images.map { NftDetailCellModel(url: $0) }
+//        displayCells(cellModels)
     }
 
     // MARK: - private functions
