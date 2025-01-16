@@ -615,6 +615,7 @@ extension NFTCardViewController {
                 UIBlockingProgressHUD.dismiss()
                 self.stopAnimatingButton(self.likeButton)
                 self.updateLikeButton()
+                self.collectionViewBottom.reloadData()
             }
         }
     }
@@ -631,6 +632,7 @@ extension NFTCardViewController {
                 UIBlockingProgressHUD.dismiss()
                 self.stopAnimatingButton(self.addToCartButton)
                 self.updateAddToCardButton()
+                self.collectionViewBottom.reloadData()
             }
         }
     }
