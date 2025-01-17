@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct NFTModel: Codable, Hashable {
+struct NftModel: Codable, Hashable {
     let createdAt: String
     let name: String
     let images: [URL]
