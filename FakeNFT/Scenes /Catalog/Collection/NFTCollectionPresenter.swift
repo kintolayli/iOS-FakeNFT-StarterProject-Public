@@ -83,8 +83,8 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                         AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
                     ]
                 )
-                completion(true)
                 self?.viewController?.showAlert(with: alertModel)
+                completion(true)
             }
         }
     }
@@ -124,8 +124,8 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
                         AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
                     ]
                 )
-                completion(true)
                 self?.viewController?.showAlert(with: alertModel)
+                completion(true)
             }
         }
     }

@@ -12,11 +12,11 @@ protocol NFTCardViewControllerProtocol: AnyObject {
     var presenter: NFTCardPresenterProtocol { get set }
     func displayCells(_ cellModels: [NftDetailCellModel])
     func showAlert(with: AlertModel)
-    func updateContent()
-    func updateTableView()
+    func updateView()
+    func reloadData()
 }
 
-class NFTCardViewController: UIViewController {
+class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtocol {
     var presenter: NFTCardPresenterProtocol
     let servicesAssembly: ServicesAssembly
     
@@ -74,7 +74,7 @@ class NFTCardViewController: UIViewController {
     
     internal lazy var activityIndicator = UIActivityIndicatorView()
     
-    private lazy var likeButton: UIButton = {
+    private lazy var likeButtonPrimary: UIButton = {
         let button = UIButton(type: .system)
         
         let heartImage = UIImage(systemName: "heart.fill")
@@ -166,7 +166,7 @@ class NFTCardViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var addToCartButton: UIButton = {
+    private lazy var addToCartButtonPrimary: UIButton = {
         let button = UIButton(type: .system)
         
         button.tintColor = Asset.ypWhite.color
@@ -239,7 +239,7 @@ class NFTCardViewController: UIViewController {
             UIBlockingProgressHUD.dismiss()
             self.tableView.removeShimmer()
             self.setupUI()
-            self.updateContent()
+            self.updateView()
         }
     }
     
@@ -261,7 +261,7 @@ class NFTCardViewController: UIViewController {
             pageControl,
             stackView1,
             stackView2,
-            addToCartButton,
+            addToCartButtonPrimary,
             tableView,
             sellerButton,
             collectionViewBottom
@@ -306,14 +306,14 @@ class NFTCardViewController: UIViewController {
             stackView2.topAnchor.constraint(equalTo: stackView1.bottomAnchor, constant: 24),
             stackView2.heightAnchor.constraint(equalToConstant: 44),
             
-            addToCartButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            addToCartButton.widthAnchor.constraint(equalToConstant: 240),
-            addToCartButton.heightAnchor.constraint(equalToConstant: 44),
-            addToCartButton.topAnchor.constraint(equalTo: stackView1.bottomAnchor, constant: 24),
+            addToCartButtonPrimary.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            addToCartButtonPrimary.widthAnchor.constraint(equalToConstant: 240),
+            addToCartButtonPrimary.heightAnchor.constraint(equalToConstant: 44),
+            addToCartButtonPrimary.topAnchor.constraint(equalTo: stackView1.bottomAnchor, constant: 24),
             
             tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: addToCartButton.bottomAnchor, constant: 24),
+            tableView.topAnchor.constraint(equalTo: addToCartButtonPrimary.bottomAnchor, constant: 24),
             tableView.heightAnchor.constraint(equalToConstant: CGFloat(72 * heghtTableView)),
             
             sellerButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -328,15 +328,15 @@ class NFTCardViewController: UIViewController {
         ])
         scrollView.contentInset = UIEdgeInsets(top: -100, left: 0, bottom: 0, right: 0)
         
-        likeButton.addTarget(self, action: #selector(likeButtonDidTap), for: .touchUpInside)
-        addToCartButton.addTarget(self, action: #selector(addToCartButtonDidTap), for: .touchUpInside)
+        likeButtonPrimary.addTarget(self, action: #selector(likeButtonPrimaryDidTap), for: .touchUpInside)
+        addToCartButtonPrimary.addTarget(self, action: #selector(addToCartButtonPrimaryDidTap), for: .touchUpInside)
         sellerButton.addTarget(self, action: #selector(sellerButtonDidTap), for: .touchUpInside)
         
         collectionViewBottom.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: likeButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: likeButtonPrimary)
     }
     
-    private func updateContent() {
+    func updateView() {
         let currentNFT = presenter.getCurrentNFT()
         let currentCollectionTitle = presenter.getCurrentCollectionTitle()
         
@@ -348,17 +348,10 @@ class NFTCardViewController: UIViewController {
         priceLabel.text = "\(currentNFT.price) ETH"
         collectionNameLabel.text = currentCollectionTitle
         nftNameLabel.text = currentNFT.name
-        
-        let cellData = presenter.getCellData()
-        
-        if cellData.likes.contains(currentNFT.id) {
-            likeButton.tintColor = Asset.ypRed.color
-        } else {
-            likeButton.tintColor = Asset.ypWhite.color
-        }
-        
-        updateAddToCardButton()
-        updateTableView()
+
+        updateLikeButtonPrimary()
+        updateAddToCardButtonPrimary()
+        reloadData()
     }
     
     private func setRating(ratingCount: Int) {
@@ -366,36 +359,36 @@ class NFTCardViewController: UIViewController {
             ratingStackView.arrangedSubviews[item].tintColor = Asset.ypYellow.color
         }
     }
-    
-    private func updateAddToCardButton() {
+
+    private func updateLikeButtonPrimary() {
+        let cellData = presenter.getCellData()
+        let currentNFT = presenter.getCurrentNFT()
+
+        if cellData.likes.contains(currentNFT.id) {
+            likeButtonPrimary.tintColor = Asset.ypRed.color
+        } else {
+            likeButtonPrimary.tintColor = Asset.ypWhite.color
+        }
+    }
+
+    private func updateAddToCardButtonPrimary() {
         let cellData = presenter.getCellData()
         let currentNFT = presenter.getCurrentNFT()
         
         if cellData.nftsInCart.contains(currentNFT.id) {
-            addToCartButton.setTitle(L10n.NFTCardViewController.inCartButton, for: .normal)
-            addToCartButton.backgroundColor = Asset.ypWhite.color
-            addToCartButton.tintColor = Asset.ypBlack.color
-            addToCartButton.layer.borderWidth = 1
-            addToCartButton.layer.borderColor = Asset.ypBlack.color.cgColor
+            addToCartButtonPrimary.setTitle(L10n.NFTCardViewController.inCartButton, for: .normal)
+            addToCartButtonPrimary.backgroundColor = Asset.ypWhite.color
+            addToCartButtonPrimary.tintColor = Asset.ypBlack.color
+            addToCartButtonPrimary.layer.borderWidth = 1
+            addToCartButtonPrimary.layer.borderColor = Asset.ypBlack.color.cgColor
         } else {
-            addToCartButton.setTitle(L10n.NFTCardViewController.addToCartButton, for: .normal)
-            addToCartButton.backgroundColor = Asset.ypBlack.color
-            addToCartButton.tintColor = Asset.ypWhite.color
+            addToCartButtonPrimary.setTitle(L10n.NFTCardViewController.addToCartButton, for: .normal)
+            addToCartButtonPrimary.backgroundColor = Asset.ypBlack.color
+            addToCartButtonPrimary.tintColor = Asset.ypWhite.color
         }
     }
     
-    private func updateLikeButton() {
-        let cellData = presenter.getCellData()
-        let currentNFT = presenter.getCurrentNFT()
-        
-        if cellData.likes.contains(currentNFT.id) {
-            likeButton.tintColor = Asset.ypRed.color
-        } else {
-            likeButton.tintColor = Asset.ypWhite.color
-        }
-    }
-    
-    private func updateTableView() {
+    func reloadData() {
         tableView.reloadData()
     }
 }
@@ -440,7 +433,9 @@ extension NFTCardViewController: UICollectionViewDataSource {
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NFTCollectionViewCell.reuseIdentifier, for: indexPath) as? NFTCollectionViewCell else { return UICollectionViewCell() }
-            
+
+            cell.delegate = self
+
             let cellData = presenter.getCellData()
             let nft = presenter.getNft(indexPath: indexPath)
             
@@ -600,38 +595,38 @@ extension NFTCardViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - NFTCardViewController Buttons Methods
 
 extension NFTCardViewController {
     @objc
-    private func likeButtonDidTap() {
+    private func likeButtonPrimaryDidTap() {
         UIBlockingProgressHUD.show()
-        startAnimatingButton(likeButton)
+        startAnimatingButton(likeButtonPrimary)
         
         let nftId = presenter.getCurrentNFT().id
         
         presenter.sendLike(nftId: nftId) { result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 UIBlockingProgressHUD.dismiss()
-                self.stopAnimatingButton(self.likeButton)
-                self.updateLikeButton()
+                self.stopAnimatingButton(self.likeButtonPrimary)
+                self.updateLikeButtonPrimary()
                 self.collectionViewBottom.reloadData()
             }
         }
     }
     
     @objc
-    private func addToCartButtonDidTap() {
+    private func addToCartButtonPrimaryDidTap() {
         UIBlockingProgressHUD.show()
-        startAnimatingButton(addToCartButton)
+        startAnimatingButton(addToCartButtonPrimary)
         
         let nftId = presenter.getCurrentNFT().id
         
         presenter.sendNFTToCart(nftId: nftId) { result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 UIBlockingProgressHUD.dismiss()
-                self.stopAnimatingButton(self.addToCartButton)
-                self.updateAddToCardButton()
+                self.stopAnimatingButton(self.addToCartButtonPrimary)
+                self.updateAddToCardButtonPrimary()
                 self.collectionViewBottom.reloadData()
             }
         }
@@ -681,5 +676,43 @@ extension NFTCardViewController {
 extension NFTCardViewController {
     func showAlert(with model: AlertModel) {
         AlertPresenter.show(model: model, viewController: self, preferredStyle: .actionSheet)
+    }
+}
+
+// MARK: - CollectionViewBottom Buttons Methods
+
+extension NFTCardViewController {
+    func likeButtonDidTap(_ cell: NFTCollectionViewCell) {
+        UIBlockingProgressHUD.show()
+        cell.animateLikeButton()
+
+        guard let indexPath = collectionViewBottom.indexPath(for: cell)  else { return }
+        let nftId = presenter.getNft(indexPath: indexPath).id
+
+        presenter.sendLike(nftId: nftId) { result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                cell.removeAnimateLikeButton()
+                self.collectionViewBottom.reloadData()
+                self.updateLikeButtonPrimary()
+                UIBlockingProgressHUD.dismiss()
+            }
+        }
+    }
+
+    func cartButtonDidTap(_ cell: NFTCollectionViewCell) {
+        UIBlockingProgressHUD.show()
+        cell.animateCartButton()
+
+        guard let indexPath = collectionViewBottom.indexPath(for: cell)  else { return }
+        let nftId = presenter.getNft(indexPath: indexPath).id
+
+        presenter.sendNFTToCart(nftId: nftId) { result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                cell.removeAnimateCartButton()
+                self.collectionViewBottom.reloadData()
+                self.updateAddToCardButtonPrimary()
+                UIBlockingProgressHUD.dismiss()
+            }
+        }
     }
 }
