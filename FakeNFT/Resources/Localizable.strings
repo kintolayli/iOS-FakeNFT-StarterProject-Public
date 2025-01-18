@@ -2,6 +2,8 @@
 
 "Error.network" = "Произошла ошибка сети";
 "Error.unknown" = "Произошла неизвестная ошибка";
+"Error.loadingLikeError" = "Ошибка загрузки лайков";
+"Error.loadingCartError" = "Ошибка загрузки NFT в корзине";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
 "Error.networkDescription" = "Произошла ошибка с кодом: %@";
@@ -19,7 +21,7 @@
 "Action.cancel" = "Отмена";
 "Action.close" = "Закрыть";
 "Action.save" = "Сохранить";
-"Action.OK" = "OK";
+"Alert.ok" = "OK";
 
 // MARK: - Alert
 
@@ -29,8 +31,8 @@
 
 "Tab.profile" = "Профиль";
 "Tab.catalog" = "Каталог";
-"Tab.basket" = "Корзина";
-"Tab.statistic" = "Статистика";
+"Tab.cart" = "Корзина";
+"Tab.statistics" = "Статистика";
 
 // MARK: - Sort
 
@@ -58,17 +60,17 @@
 "Catalog.addBasket.button" = "Добавить в корзину";
 "Catalog.sellers.button" = "Перейти на сайт продавца";
 
-// MARK: - Basket
+// MARK: - Cart
 
-"Basket.forPay.button" = "К оплате";
-"Basket.allert" = "Вы уверены, что хотите\n удалить объект из корзины?";
-"Basket.title" = "Выберите способ оплаты";
-"Basket.agree.description" = "Совершая покупку, вы соглашаетесь с условиями";
-"Basket.user.agree" = "Пользовательского соглашения";
-"Basket.success.placeholder" = "Успех! Оплата прошла,\n поздравляем с покупкой!";
-"Basket.back.button" = "Вернуться в каталог";
-"Basket.payError.alert" = "Не удалось произвести оплату";
-"Basket.empty.placeholder" = "Корзина пуста";
+"Cart.forPay.button" = "К оплате";
+"Cart.allert" = "Вы уверены, что хотите\n удалить объект из корзины?";
+"Cart.title" = "Выберите способ оплаты";
+"Cart.agree.description" = "Совершая покупку, вы соглашаетесь с условиями";
+"Cart.user.agree" = "Пользовательского соглашения";
+"Cart.success.placeholder" = "Успех! Оплата прошла,\n поздравляем с покупкой!";
+"Cart.back.button" = "Вернуться в каталог";
+"Cart.payError.alert" = "Не удалось произвести оплату";
+"Cart.empty.placeholder" = "Корзина пуста";
 
 // MARK: - Profile
 
@@ -83,6 +85,21 @@
 "Profile.fromAuthor" = "ОТ";
 "Profile.myNft.placeholder" = "У вас еще нет NFT";
 "Profile.selectedNft.placeholder" = "У вас еще нет избранных NFT";
+
+// MARK: - Catalog
+
+"CatalogController.sortNFT.sortType1" = "По названию";
+"CatalogController.sortNFT.sortType2" = "По количеству NFT";
+"CatalogController.sortNFT.closeTitle" = "Закрыть";
+"CatalogController.sortNFT.sortTitle" = "Сортировка";
+
+"NFTCollectionViewController.collectionAuthorLabel" = "Автор коллекции: ";
+"NFTCollectionViewCell.getCurrency.ETH" = "ETH";
+
+"NFTCardViewController.priceNameLabel" = "Цена";
+"NFTCardViewController.addToCartButton" = "Добавить в корзину";
+"NFTCardViewController.inCartButton" = "В корзине";
+"NFTCardViewController.sellerButton" = "Перейти на сайт продавца";
 
 // MARK: - Statistics
 

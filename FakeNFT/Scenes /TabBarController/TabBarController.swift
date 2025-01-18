@@ -5,26 +5,26 @@ final class TabBarController: UITabBarController {
     var servicesAssembly: ServicesAssembly!
 
     private let profileTabBarItem = UITabBarItem(
-        title: LocalizationKey.tabProfile.localized(),
-        image: UIImage(named: "profile"),
+        title: L10n.Tab.profile,
+        image: Asset.profileTabBarItemImage.image,
         tag: 0
     )
 
     private let catalogTabBarItem = UITabBarItem(
-        title: LocalizationKey.tabCatalog.localized(),
-        image: UIImage(named: "catalog"),
+        title: L10n.Tab.catalog,
+        image: Asset.catalogTabBarItemImage.image,
         tag: 1
     )
 
-    private let basketTabBarItem = UITabBarItem(
-        title: LocalizationKey.tabBasket.localized(),
-        image: UIImage(named: "basket"),
+    private let cartTabBarItem = UITabBarItem(
+        title: L10n.Tab.cart,
+        image: Asset.cartTabBarItemImage.image,
         tag: 2
     )
 
-    private let statisticTabBarItem = UITabBarItem(
-        title: LocalizationKey.tabStatistic.localized(),
-        image: UIImage(named: "statistic"),
+    private let statisticsTabBarItem = UITabBarItem(
+        title: L10n.Tab.statistics,
+        image: Asset.statisticsTabBarItemImage.image,
         tag: 3
     )
 
@@ -32,19 +32,32 @@ final class TabBarController: UITabBarController {
         super.viewDidLoad()
 
         let profileNavigationController = createProfileViewController()
-        let catalogController = UIViewController()
+
+        let catalogController = CatalogViewController(
+            presenter: CatalogPresenter(),
+            servicesAssembly: servicesAssembly
+        )
         catalogController.view.backgroundColor = .systemBackground
         catalogController.tabBarItem = catalogTabBarItem
 
-        let basketController = UIViewController()
-        basketController.view.backgroundColor = .systemBackground
-        basketController.tabBarItem = basketTabBarItem
+        let cartController = TestCartViewController(
+            servicesAssembly: servicesAssembly
+        )
+        cartController.view.backgroundColor = .systemBackground
+        cartController.tabBarItem = cartTabBarItem
 
-        let statisticController = UIViewController()
-        statisticController.view.backgroundColor = .systemBackground
-        statisticController.tabBarItem = statisticTabBarItem
+        let statisticsController = TestStatisticsViewController(
+            servicesAssembly: servicesAssembly
+        )
+        statisticsController.view.backgroundColor = .systemBackground
+        statisticsController.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileNavigationController, catalogController, basketController, statisticController]
+        viewControllers = [
+            profileNavigationController,
+            UINavigationController(rootViewController: catalogController),
+            cartController,
+            statisticsController]
+
         view.backgroundColor = .systemBackground
         tabBar.unselectedItemTintColor = .ypBlack
     }

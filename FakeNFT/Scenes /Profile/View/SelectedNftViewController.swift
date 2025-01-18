@@ -24,6 +24,8 @@ final class SelectedNftViewController: UIViewController {
         cellCount: 2,
         leftInset: 16,
         rightInset: 16,
+        topInset: 0,
+        bottomInset: 0,
         cellSpacing: 7
     )
 

@@ -26,12 +26,21 @@ extension UIColor {
         )
     }
 
+    // TODO: - Разобраться с повторяющимися цветами после мерджа
+
+
     // MARK: - Background Colors
     static let background = UIColor { $0.userInterfaceStyle == .dark ? .ypBlackUniversal : .ypWhiteUniversal }
 
     // MARK: - Text Colors
     static let textPrimary: UIColor = .ypBlack
+    static let primary = UIColor(red: 0 / 255, green: 122 / 255, blue: 255 / 255, alpha: 1.0)
+
     static let textSecondary: UIColor = .ypGreenUniversal
+    static let secondary = UIColor(red: 255 / 255, green: 193 / 255, blue: 7 / 255, alpha: 1.0)
+
+    static let textOnPrimary = UIColor.white
+    static let textOnSecondary = UIColor.black
 
     // MARK: - Base Colors
 
@@ -46,7 +55,13 @@ extension UIColor {
 
     // MARK: - Base Colors Day/Night
     private static let ypLightGreyDay = UIColor(hexString: "#F7F7F8")
+    private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
+
     private static let ypLightGreyNight = UIColor(hexString: "#2C2C2E")
+    private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
+
+    private static let yaBlackLight = UIColor(hexString: "1A1B22")
+    private static let yaBlackDark = UIColor.white
 
     static let ypWhite = UIColor { $0.userInterfaceStyle == .dark ? .ypBlackUniversal : .ypWhiteUniversal }
 
@@ -55,8 +70,18 @@ extension UIColor {
     static let ypLightGrey = UIColor { $0.userInterfaceStyle == .dark ? .ypLightGreyNight : .ypLightGreyDay }
 
     static let ypSegmentActive = UIColor { $0.userInterfaceStyle == .dark ? .ypBlackUniversal : .ypWhiteUniversal }
+    static let segmentActive = UIColor { traits in
+        return traits.userInterfaceStyle == .dark
+        ? .yaBlackDark
+        : .yaBlackLight
+    }
 
     static let ypSegmentInactive = UIColor { $0.userInterfaceStyle == .dark ? .ypLightGreyDay : .ypLightGreyNight }
+    static let segmentInactive = UIColor { traits in
+        return traits.userInterfaceStyle == .dark
+        ? .yaLightGrayDark
+        : .yaLightGrayLight
+    }
 
     static let ypCloseButton = UIColor { $0.userInterfaceStyle == .dark ? .ypBlackUniversal : .ypWhiteUniversal }
 }

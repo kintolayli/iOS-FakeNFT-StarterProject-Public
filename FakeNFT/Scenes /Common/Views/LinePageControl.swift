@@ -34,6 +34,7 @@ final class LinePageControl: UIView {
 
     init() {
         super.init(frame: .zero)
+
         addSubview(stackView)
         stackView.constraintEdges(to: self)
     }
@@ -60,7 +61,7 @@ final class LinePageControl: UIView {
     func selectedSegmentChanged() {
         for (index, subview) in stackView.arrangedSubviews.enumerated() {
             let isSelected = index == selectedItem
-            subview.backgroundColor = isSelected ? .ypSegmentActive : .ypSegmentInactive
+            subview.backgroundColor = isSelected ? .segmentActive : .segmentInactive
         }
     }
 }
