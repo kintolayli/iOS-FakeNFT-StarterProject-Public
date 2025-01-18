@@ -1,5 +1,5 @@
-import UIKit
 import Kingfisher
+import UIKit
 
 protocol NftDetailView: AnyObject, ErrorView, LoadingView {
     func displayCells(_ cellModels: [NftDetailCellModel])
@@ -12,8 +12,8 @@ final class NftDetailViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = UIConstants.Spacing.zero
+        layout.minimumLineSpacing = UIConstants.Spacing.zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(NftImageCollectionViewCell.self)
         collectionView.dataSource = self
@@ -26,7 +26,7 @@ final class NftDetailViewController: UIViewController {
 
     private lazy var closeButton: UIButton = {
         let button = UIButton()
-        button.tintColor = .closeButton
+        button.tintColor = .ypCloseButton
         button.setImage(UIImage(named: "close"), for: .normal)
         button.addTarget(self, action: #selector(close), for: .touchUpInside)
         return button

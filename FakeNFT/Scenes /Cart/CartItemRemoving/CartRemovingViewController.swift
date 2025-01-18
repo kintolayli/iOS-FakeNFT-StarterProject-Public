@@ -112,7 +112,7 @@ final class CartRemovingViewController: UIViewController {
         buttonsStackView.distribution = .fillEqually
         
         deleteButton.setTitle(L10n.Cart.delete, for: .normal)
-        deleteButton.setTitleColor(UIColor(resource: .yRed), for: .normal)
+        deleteButton.setTitleColor(UIColor(resource: .ypRed), for: .normal)
         deleteButton.backgroundColor = UIColor(resource: .ypBlack)
         deleteButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         deleteButton.layer.cornerRadius = 16

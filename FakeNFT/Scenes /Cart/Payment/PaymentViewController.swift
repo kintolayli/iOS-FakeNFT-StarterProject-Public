@@ -11,7 +11,7 @@ protocol PaymentViewControllerDelegate: AnyObject {
     func returnToCatalogTab()
 }
 
-struct GeometricParams {
+struct ExtendedGeometricParams {
     let cellCount: Int
     let leftInset: CGFloat
     let rightInset: CGFloat
@@ -45,7 +45,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     
     private var pickedCurrencyIndex = -1
     
-    private let sectionParams = GeometricParams(cellCount: 2,
+    private let sectionParams = ExtendedGeometricParams(cellCount: 2,
                                                 leftInset: 16,
                                                 rightInset: 16,
                                                 topInset: 0,
@@ -76,7 +76,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     }
     
     func loadAWebView(urlString: String) {
-        let agreementWebViewController = WebViewController()
+        let agreementWebViewController = PaymentWebViewController()
         agreementWebViewController.load(urlString: urlString)
         navigationController?.pushViewController(agreementWebViewController, animated: true)
     }

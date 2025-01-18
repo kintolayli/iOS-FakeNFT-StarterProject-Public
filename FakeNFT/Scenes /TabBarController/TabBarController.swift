@@ -6,60 +6,86 @@ final class TabBarController: UITabBarController {
 
     private let profileTabBarItem = UITabBarItem(
         title: L10n.Tab.profile,
-        image: UIImage(named: "ProfileTabBarItemImage"),
+        image: Asset.profileTabBarItemImage.image,
         tag: 0
     )
 
     private let catalogTabBarItem = UITabBarItem(
         title: L10n.Tab.catalog,
-        image: UIImage(named: "CatalogTabBarItemImage"),
-        tag: 0
+        image: Asset.catalogTabBarItemImage.image,
+        tag: 1
     )
 
     private let cartTabBarItem = UITabBarItem(
         title: L10n.Tab.cart,
-        image: UIImage(named: "CartTabBarItemImage"),
-        tag: 0
+        image: Asset.cartTabBarItemImage.image,
+        tag: 2
     )
 
     private let statisticsTabBarItem = UITabBarItem(
         title: L10n.Tab.statistics,
-        image: UIImage(named: "StatisticsTabBarItemImage"),
-        tag: 0
+        image: Asset.statisticsTabBarItemImage.image,
+        tag: 3
     )
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let profileController = TestProfileViewController(
+        let profileNavigationController = createProfileViewController()
+
+        let catalogController = CatalogViewController(
+            presenter: CatalogPresenter(),
             servicesAssembly: servicesAssembly
         )
-
-        let catalogController = TestCatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
-
+        catalogController.view.backgroundColor = .systemBackground
+        catalogController.tabBarItem = catalogTabBarItem
+        
         let cartPresenter = CartPresenter(cartService: CartService.shared)
         let cartController = CartViewController(presenter: cartPresenter)
+        let cartNavigationColntroller = UINavigationController(rootViewController: cartController)
+        cartController.tabBarItem = cartTabBarItem
 
         let statisticsController = TestStatisticsViewController(
             servicesAssembly: servicesAssembly
         )
-        
-        let cartNavigationColntroller = UINavigationController(rootViewController: cartController)
-
-        profileController.tabBarItem = profileTabBarItem
-        catalogController.tabBarItem = catalogTabBarItem
-        cartController.tabBarItem = cartTabBarItem
+        statisticsController.view.backgroundColor = .systemBackground
         statisticsController.tabBarItem = statisticsTabBarItem
 
-        viewControllers = [profileController, catalogController, cartNavigationColntroller, statisticsController]
+        viewControllers = [
+            profileNavigationController,
+            UINavigationController(rootViewController: catalogController),
+            cartNavigationColntroller,
+            statisticsController]
 
-        setupUI()
+        view.backgroundColor = .systemBackground
+        tabBar.unselectedItemTintColor = .ypBlack
     }
 
-    private func setupUI() {
-        tabBar.unselectedItemTintColor = UIColor(named: "ypBlack")
-        tabBar.backgroundColor = UIColor(named: "ypWhite")
+    private func createProfileViewController() -> UINavigationController {
+        
+        let profileService = servicesAssembly.profileService
+        let nftService = servicesAssembly.myNftService
+        let likeService = servicesAssembly.likeService
+        
+
+        let profileRepository = ProfileRepositoryImpl(profileService: profileService)
+        
+        
+        
+        let profileRouter = ProfileRouter(
+            profileService: profileService,
+            nftService: nftService,
+            likeService: likeService
+        )
+
+        let profilePresenter = ProfilePresenter(
+            router: profileRouter,
+            repository: profileRepository
+        )
+        let profileController = ProfileViewController(presenter: profilePresenter)
+        profilePresenter.view = profileController
+        profileRouter.viewController = profileController
+        profileController.tabBarItem = profileTabBarItem
+        return UINavigationController(rootViewController: profileController)
     }
 }

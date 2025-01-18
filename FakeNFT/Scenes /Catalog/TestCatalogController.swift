@@ -17,7 +17,7 @@ final class TestCatalogViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .red
+        view.backgroundColor = .systemBackground
 
         view.addSubview(testNftButton)
         testNftButton.constraintCenters(to: view)
@@ -36,6 +36,6 @@ final class TestCatalogViewController: UIViewController {
 }
 
 private enum Constants {
-    static let openNftTitle = L10n.Catalog.openNft
+    static let openNftTitle = LocalizationKey.catOpenNft.localized()
     static let testNftId = "7773e33c-ec15-4230-a102-92426a3a6d5a"
 }
