@@ -62,6 +62,8 @@ struct DefaultNetworkClient: NetworkClient {
         }
         guard let urlRequest = create(request: request) else { return nil }
 
+        Logger.shared.info("\(urlRequest)")
+
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let response = response as? HTTPURLResponse else {
                 onResponse(.failure(NetworkClientError.urlSessionError))
@@ -73,10 +75,11 @@ struct DefaultNetworkClient: NetworkClient {
                 return
             }
 
-            if let data = data {
+            if let data {
                 onResponse(.success(data))
                 return
-            } else if let error = error {
+            } else if let error {
+                Logger.shared.error("[error=\(error)][request=\(request)][response=\(response)]")
                 onResponse(.failure(NetworkClientError.urlRequestError(error)))
                 return
             } else {
@@ -123,10 +126,7 @@ struct DefaultNetworkClient: NetworkClient {
         if let dtoDictionary = request.dto?.asDictionary() {
             var urlComponents = URLComponents()
             let queryItems = dtoDictionary.map { field in
-                URLQueryItem(
-                    name: field.key,
-                    value: field.value
-                    )
+                URLQueryItem(name: field.key, value: field.value)
             }
             urlComponents.queryItems = queryItems
             urlRequest.httpBody = urlComponents.query?.data(using: .utf8)
@@ -142,7 +142,20 @@ struct DefaultNetworkClient: NetworkClient {
         do {
             let response = try decoder.decode(T.self, from: data)
             onResponse(.success(response))
+        } catch let DecodingError.dataCorrupted(context) {
+            Logger.shared.log("Data corrupted: \(context.debugDescription)")
+            onResponse(.failure(NetworkClientError.parsingError))
+        } catch let DecodingError.keyNotFound(key, context) {
+            Logger.shared.log("Key '\(key)' not found: \(context.debugDescription), codingPath: \(context.codingPath)")
+            onResponse(.failure(NetworkClientError.parsingError))
+        } catch let DecodingError.typeMismatch(type, context) {
+            Logger.shared.log("Type mismatch for type '\(type)': \(context.debugDescription), codingPath: \(context.codingPath)")
+            onResponse(.failure(NetworkClientError.parsingError))
+        } catch let DecodingError.valueNotFound(value, context) {
+            Logger.shared.log("Value '\(value)' not found: \(context.debugDescription), codingPath: \(context.codingPath)")
+            onResponse(.failure(NetworkClientError.parsingError))
         } catch {
+            Logger.shared.log("Unknown error: \(error.localizedDescription)")
             onResponse(.failure(NetworkClientError.parsingError))
         }
     }

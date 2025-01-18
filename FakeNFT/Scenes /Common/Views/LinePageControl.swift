@@ -24,7 +24,7 @@ final class LinePageControl: UIView {
 
     private let stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.spacing = 8
+        stackView.spacing = UIConstants.Spacing.small8
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
         return stackView
@@ -34,7 +34,6 @@ final class LinePageControl: UIView {
 
     init() {
         super.init(frame: .zero)
-
         addSubview(stackView)
         stackView.constraintEdges(to: self)
     }
@@ -61,7 +60,7 @@ final class LinePageControl: UIView {
     func selectedSegmentChanged() {
         for (index, subview) in stackView.arrangedSubviews.enumerated() {
             let isSelected = index == selectedItem
-            subview.backgroundColor = isSelected ? .segmentActive : .segmentInactive
+            subview.backgroundColor = isSelected ? .ypSegmentActive : .ypSegmentInactive
         }
     }
 }
