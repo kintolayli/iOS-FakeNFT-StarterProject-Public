@@ -5,6 +5,8 @@
 //  Created by Виталий Фульман on 15.12.2024.
 //
 
+import Foundation
+
 enum CartSortingType: Int {
     case byTitle = 0
     case byRating = 1
@@ -22,7 +24,19 @@ final class CartService {
             items.append(item)
         }
     }
-    
+
+    func getOnlyItemsId() -> [UUID] {
+        var itemsId: [UUID] = []
+
+        items.forEach { item in
+            if let itemId = UUID(uuidString: item.nftId) {
+                itemsId.append(itemId)
+            }
+        }
+
+        return itemsId
+    }
+
     func removeItemByNftId(_ id: String) {
         items.removeAll(where: {$0.nftId == id})
     }

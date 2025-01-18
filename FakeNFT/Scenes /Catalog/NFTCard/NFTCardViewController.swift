@@ -620,10 +620,10 @@ extension NFTCardViewController {
         UIBlockingProgressHUD.show()
         startAnimatingButton(addToCartButtonPrimary)
         
-        let nftId = presenter.getCurrentNFT().id
+        let nft = presenter.getCurrentNFT()
         
-        presenter.sendNFTToCart(nftId: nftId) { result in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        presenter.sendNFTToCart(nft: nft) { result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 UIBlockingProgressHUD.dismiss()
                 self.stopAnimatingButton(self.addToCartButtonPrimary)
                 self.updateAddToCardButtonPrimary()
@@ -704,10 +704,10 @@ extension NFTCardViewController {
         cell.animateCartButton()
 
         guard let indexPath = collectionViewBottom.indexPath(for: cell)  else { return }
-        let nftId = presenter.getNft(indexPath: indexPath).id
+        let nft = presenter.getNft(indexPath: indexPath)
 
-        presenter.sendNFTToCart(nftId: nftId) { result in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        presenter.sendNFTToCart(nft: nft) { result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 cell.removeAnimateCartButton()
                 self.collectionViewBottom.reloadData()
                 self.updateAddToCardButtonPrimary()
