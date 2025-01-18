@@ -22,7 +22,7 @@ final class NFTCardTableViewCell: UITableViewCell {
     
     private lazy var cryptoTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .caption2
+        label.font = .regular13
         label.text = "..."
         label.textColor = Asset.ypBlack.color
         return label
@@ -30,7 +30,7 @@ final class NFTCardTableViewCell: UITableViewCell {
     
     private lazy var cryptoPriceLabel: UILabel = {
         let label = UILabel()
-        label.font = .caption1
+        label.font = .regular15
         label.text = "..."
         label.textColor = Asset.ypBlack.color
         return label
@@ -48,7 +48,7 @@ final class NFTCardTableViewCell: UITableViewCell {
     
     private lazy var nftPriceLabel: UILabel = {
         let label = UILabel()
-        label.font = .caption2
+        label.font = .regular13
         label.textColor = Asset.ypGreen.color
         return label
     }()
@@ -86,15 +86,15 @@ final class NFTCardTableViewCell: UITableViewCell {
         cryptoTitleImage.image = grayImage
         
         cryptoTitleLabel.addShimmer()
-        cryptoTitleLabel.text = L10n.loading
+        cryptoTitleLabel.text = L10n.Shimmer.loading
         cryptoTitleLabel.textColor = .segmentInactive
         
         cryptoPriceLabel.addShimmer()
-        cryptoPriceLabel.text = L10n.loading
+        cryptoPriceLabel.text = L10n.Shimmer.loading
         cryptoPriceLabel.textColor = .segmentInactive
         
         nftPriceLabel.addShimmer()
-        nftPriceLabel.text = L10n.loading
+        nftPriceLabel.text = L10n.Shimmer.loading
         nftPriceLabel.textColor = .segmentInactive
     }
     

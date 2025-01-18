@@ -52,7 +52,7 @@ final class CatalogTableViewCell: UITableViewCell {
         cellTitleImage.image = grayImage
 
         cellTitleLabel.addShimmer()
-        cellTitleLabel.text = L10n.loading
+        cellTitleLabel.text = L10n.Shimmer.loading
         cellTitleLabel.textColor = .segmentInactive
     }
 

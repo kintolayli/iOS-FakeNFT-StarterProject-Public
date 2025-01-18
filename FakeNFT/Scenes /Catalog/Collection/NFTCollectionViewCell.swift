@@ -76,7 +76,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
         
         label.textColor = Asset.ypBlack.color
         label.textAlignment = .left
-        label.font = .bodyBold
+        label.font = .bold17
         
         return label
     }()
@@ -86,7 +86,7 @@ class NFTCollectionViewCell: UICollectionViewCell {
         
         label.textColor = Asset.ypBlack.color
         label.textAlignment = .left
-        label.font = .price1
+        label.font = .medium10
         
         return label
     }()
@@ -153,11 +153,11 @@ class NFTCollectionViewCell: UICollectionViewCell {
         likeButton.isHidden = true
         
         titleLabel.addShimmer()
-        titleLabel.text = L10n.loading
+        titleLabel.text = L10n.Shimmer.loading
         titleLabel.textColor = .segmentInactive
         
         priceLabel.addShimmer()
-        priceLabel.text = L10n.loading
+        priceLabel.text = L10n.Shimmer.loading
         priceLabel.textColor = .segmentInactive
     }
     

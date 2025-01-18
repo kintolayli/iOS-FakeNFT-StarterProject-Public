@@ -32,7 +32,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
     private lazy var collectionTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .headline3
+        label.font = .bold22
         label.textColor = .label
         label.textAlignment = .center
         return label
@@ -40,7 +40,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
     private lazy var collectionAuthorLabel: UILabel = {
         let label = UILabel()
-        label.font = .caption2
+        label.font = .regular13
         label.text = L10n.NFTCollectionViewController.collectionAuthorLabel
         label.textColor = .label
         label.textAlignment = .left
@@ -50,7 +50,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
     private lazy var collectionAuthorLinkButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitleColor(.systemBlue, for: .normal)
-        button.titleLabel?.font = .caption1
+        button.titleLabel?.font = .regular15
         button.contentHorizontalAlignment = .leading
         button.contentVerticalAlignment = .bottom
         button.addTarget(self, action: #selector(authorLinkButtonDidTap), for: .touchUpInside)
@@ -67,7 +67,7 @@ class NFTCollectionViewController: UIViewController, NFTCollectionViewController
 
     private lazy var collectionDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .caption2
+        label.font = .regular13
         label.numberOfLines = 0
         label.textColor = .label
         label.textAlignment = .left

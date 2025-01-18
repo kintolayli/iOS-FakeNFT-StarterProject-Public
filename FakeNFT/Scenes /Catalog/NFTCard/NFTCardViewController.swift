@@ -94,7 +94,7 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
     
     private lazy var nftNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .headline3
+        label.font = .bold22
         label.textColor = .label
         label.textAlignment = .center
         return label
@@ -119,7 +119,7 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
     
     private lazy var collectionNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .bodyBold
+        label.font = .bold17
         label.textColor = .label
         label.textAlignment = .center
         
@@ -140,7 +140,7 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
     
     private lazy var priceNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .caption1
+        label.font = .regular15
         label.textColor = .label
         label.textAlignment = .center
         
@@ -151,7 +151,7 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
     
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
-        label.font = .bodyBold
+        label.font = .bold17
         label.textColor = .label
         label.textAlignment = .center
         
@@ -171,7 +171,7 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
         
         button.tintColor = Asset.ypWhite.color
         button.setTitle(L10n.NFTCardViewController.addToCartButton, for: .normal)
-        button.titleLabel?.font = .bodyBold
+        button.titleLabel?.font = .bold17
         
         button.backgroundColor = Asset.ypBlack.color
         button.adjustsImageWhenHighlighted = true
@@ -199,7 +199,7 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
         
         button.tintColor = Asset.ypBlack.color
         button.setTitle(L10n.NFTCardViewController.sellerButton, for: .normal)
-        button.titleLabel?.font = .caption1
+        button.titleLabel?.font = .regular15
         
         button.backgroundColor = Asset.ypWhite.color
         button.adjustsImageWhenHighlighted = true
