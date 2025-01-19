@@ -57,7 +57,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     init(presenter: PaymentPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = UIColor(resource: .ypWhite)
+        view.backgroundColor = Asset.ypWhite.color
         presenter.viewController = self
     }
     
@@ -134,7 +134,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         let backButton = UIButton(type: .custom)
         backButton.setImage(UIImage(resource: .backward), for: .normal)
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
-        backButton.tintColor = UIColor(resource: .ypBlack)
+        backButton.tintColor = Asset.ypBlack.color
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
         navigationItem.title = L10n.Payment.navBarTitle
@@ -149,7 +149,7 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
         currenciesCollectionView.register(CurrenciesCollectionViewCell.self, forCellWithReuseIdentifier: CurrenciesCollectionViewCell.identifier)
         
         currenciesCollectionView.allowsMultipleSelection = false
-        currenciesCollectionView.backgroundColor = UIColor(resource: .ypWhite)
+        currenciesCollectionView.backgroundColor = Asset.ypWhite.color
         currenciesCollectionView.dataSource = self
         currenciesCollectionView.delegate = self
         
@@ -166,24 +166,24 @@ final class PaymentViewController: UIViewController, PaymentViewControllerProtoc
     }
     
     private func setupFooterView() {
-        footerView.backgroundColor = UIColor(resource: .ypLightGrey)
+        footerView.backgroundColor = Asset.ypLightGrey.color
         footerView.layer.cornerRadius = 16
         footerView.clipsToBounds = true
         
         let agreementLabel = UILabel()
         agreementLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        agreementLabel.textColor = UIColor(resource: .ypBlack)
+        agreementLabel.textColor = Asset.ypBlack.color
         agreementLabel.text = L10n.Payment.agreementLabel
         
-        agreementButton.backgroundColor = UIColor(resource: .ypLightGrey)
+        agreementButton.backgroundColor = Asset.ypLightGrey.color
         agreementButton.setTitle(L10n.Payment.agreementLinkText, for: .normal)
-        agreementButton.setTitleColor(UIColor(resource: .ypBlue), for: .normal)
+        agreementButton.setTitleColor(Asset.ypBlue.color, for: .normal)
         agreementButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         agreementButton.addTarget(self, action: #selector(didTapAgreementButton), for: .touchUpInside)
 
-        payButton.backgroundColor = UIColor(resource: .ypBlack)
+        payButton.backgroundColor = Asset.ypBlack.color
         payButton.setTitle(L10n.Payment.pay, for: .normal)
-        payButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        payButton.setTitleColor(Asset.ypWhite.color, for: .normal)
         payButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         payButton.addTarget(self, action: #selector(didTapPayButton), for: .touchUpInside)
         payButton.layer.cornerRadius = 16

@@ -41,7 +41,7 @@ final class CartTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = UIColor(resource: .ypWhite)
+        contentView.backgroundColor = Asset.ypWhite.color
         setupNftImageView()
         setupPriceStackView()
         setupNftInfoStackView()
@@ -93,9 +93,9 @@ final class CartTableViewCell: UITableViewCell {
     private func setNftRating(stackView: UIStackView, rating: Int) {
         for (index, item) in stackView.arrangedSubviews.enumerated() {
             if index < rating {
-                item.tintColor = UIColor(resource: .ypYellow)
+                item.tintColor = Asset.ypYellow.color
             } else {
-                item.tintColor = UIColor(resource: .ypLightGrey)
+                item.tintColor = Asset.ypLightGrey.color
             }
         }
     }
@@ -110,8 +110,8 @@ final class CartTableViewCell: UITableViewCell {
         starsStackView.axis = .horizontal
         starsStackView.spacing = 2
         
-        for _ in 0...5 {
-            starsStackView.addArrangedSubview(UIImageView(image: UIImage(resource: .star)))
+        for _ in 0...4 {
+            starsStackView.addArrangedSubview(UIImageView(image: Asset.star.image.withRenderingMode(.alwaysTemplate)))
         }
     
         nftTitleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -131,7 +131,7 @@ final class CartTableViewCell: UITableViewCell {
     private func setupRemoveButton() {
         let removeImage = UIImage(resource: .cartDelete)
         removeButton.setImage(removeImage, for: .normal)
-        removeButton.tintColor = UIColor(resource: .ypBlack)
+        removeButton.tintColor = Asset.ypBlack.color
         removeButton.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
         
         removeButton.translatesAutoresizingMaskIntoConstraints = false

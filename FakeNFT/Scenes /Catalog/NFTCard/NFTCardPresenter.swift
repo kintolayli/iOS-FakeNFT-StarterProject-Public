@@ -114,13 +114,13 @@ final class NFTCardPresenter: NFTCardPresenterProtocol {
     }
     
     func loadNFTsInCart(completion: @escaping (Bool) -> Void) {
-        nftsInCart = cartService.getOnlyItemsId()
+        nftsInCart = cartService.getOnlyItemsId().compactMap{UUID(uuidString: $0)}
         completion(true)
     }
     
     func sendNFTToCart(nft: NftModel, completion: @escaping (Bool) -> Void) {
         let itemImageUrl = nft.images[0].absoluteString
-        let itemId = nft.id.uuidString
+        let itemId = nft.id.uuidString.lowercased()
         let cartItem = CartItem(nftId: itemId, name: nft.name, rating: nft.rating, price: Float(nft.price), imageUrl: itemImageUrl)
 
         if cartService.checkItemInCartByNftId(itemId) {

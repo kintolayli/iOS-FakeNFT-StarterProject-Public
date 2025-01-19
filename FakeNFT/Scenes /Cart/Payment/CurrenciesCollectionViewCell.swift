@@ -42,10 +42,10 @@ final class CurrenciesCollectionViewCell: UICollectionViewCell {
     }
         
     private func setupCellView() {
-        cellView.backgroundColor = UIColor(resource: .ypLightGrey)
+        cellView.backgroundColor = Asset.ypLightGrey.color
         cellView.layer.cornerRadius = 16
         cellView.layer.borderWidth = 0
-        cellView.layer.borderColor = UIColor(resource: .ypBlack).cgColor
+        cellView.layer.borderColor = Asset.ypBlack.color.cgColor
         
         cellView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -63,7 +63,7 @@ final class CurrenciesCollectionViewCell: UICollectionViewCell {
         currencyImageView.kf.indicatorType = .activity
         currencyImageView.layer.cornerRadius = 6
         currencyImageView.clipsToBounds = true
-        currencyImageView.backgroundColor = UIColor(resource: .ypBlackUniversal)
+        currencyImageView.backgroundColor = Asset.ypBlackUniversal.color
         
         currencyImageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -82,10 +82,10 @@ final class CurrenciesCollectionViewCell: UICollectionViewCell {
         currencyInfoStackView.spacing = 0
         
         currencyTitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        currencyTitleLabel.textColor = UIColor(resource: .ypBlack)
+        currencyTitleLabel.textColor = Asset.ypBlack.color
         
         currencyNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        currencyNameLabel.textColor = UIColor(resource: .ypGreen)
+        currencyNameLabel.textColor = Asset.ypGreen.color
         
         currencyTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         currencyNameLabel.translatesAutoresizingMaskIntoConstraints = false

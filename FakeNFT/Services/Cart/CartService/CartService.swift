@@ -25,16 +25,8 @@ final class CartService {
         }
     }
 
-    func getOnlyItemsId() -> [UUID] {
-        var itemsId: [UUID] = []
-
-        items.forEach { item in
-            if let itemId = UUID(uuidString: item.nftId) {
-                itemsId.append(itemId)
-            }
-        }
-
-        return itemsId
+    func getOnlyItemsId() -> [String] {
+        return items.map{$0.nftId}
     }
 
     func removeItemByNftId(_ id: String) {

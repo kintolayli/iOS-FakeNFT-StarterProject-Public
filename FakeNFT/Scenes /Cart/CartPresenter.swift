@@ -26,7 +26,6 @@ final class CartPresenter: CartPresenterProtocol {
     }
     
     func viewDidLoad() {
-        cartService.mockCart()
     }
     
     func updateOrderDetails() {

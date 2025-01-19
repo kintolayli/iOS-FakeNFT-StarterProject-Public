@@ -90,7 +90,7 @@ final class CartRemovingViewController: UIViewController {
     private func setupDeleteConfirmationLabel() {
         deleteConfirmationLabel.text = "Вы уверены, что хотите удалить объект из корзины?"
         deleteConfirmationLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        deleteConfirmationLabel.textColor = UIColor(resource: .ypBlack)
+        deleteConfirmationLabel.textColor = Asset.ypBlack.color
         deleteConfirmationLabel.numberOfLines = 2
         deleteConfirmationLabel.textAlignment = .center
         
@@ -112,16 +112,16 @@ final class CartRemovingViewController: UIViewController {
         buttonsStackView.distribution = .fillEqually
         
         deleteButton.setTitle(L10n.Cart.delete, for: .normal)
-        deleteButton.setTitleColor(UIColor(resource: .ypRed), for: .normal)
-        deleteButton.backgroundColor = UIColor(resource: .ypBlack)
+        deleteButton.setTitleColor(Asset.ypRed.color, for: .normal)
+        deleteButton.backgroundColor = Asset.ypBlack.color
         deleteButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         deleteButton.layer.cornerRadius = 16
         deleteButton.clipsToBounds = true
         deleteButton.addTarget(self, action: #selector(didTapDeleteButton), for: .touchUpInside)
         
         returnButton.setTitle(L10n.Cart.return, for: .normal)
-        returnButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
-        returnButton.backgroundColor = UIColor(resource: .ypBlack)
+        returnButton.setTitleColor(Asset.ypWhite.color, for: .normal)
+        returnButton.backgroundColor = Asset.ypBlack.color
         returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         returnButton.layer.cornerRadius = 16
         returnButton.clipsToBounds = true

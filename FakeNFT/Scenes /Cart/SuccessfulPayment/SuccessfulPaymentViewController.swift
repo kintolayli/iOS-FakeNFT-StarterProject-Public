@@ -21,7 +21,7 @@ final class SuccessfulPaymentViewController: UIViewController {
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = UIColor(resource: .ypWhite)
+        view.backgroundColor = Asset.ypWhite.color
     }
     
     required init?(coder: NSCoder) {
@@ -35,9 +35,9 @@ final class SuccessfulPaymentViewController: UIViewController {
     }
     
     private func setupReturnToCatalogButton() {
-        returnToCatalogButton.backgroundColor = UIColor(resource: .ypBlack)
+        returnToCatalogButton.backgroundColor = Asset.ypBlack.color
         returnToCatalogButton.setTitle(L10n.SuccessfulPayment.returnToCatalogTab, for: .normal)
-        returnToCatalogButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        returnToCatalogButton.setTitleColor(Asset.ypWhite.color, for: .normal)
         returnToCatalogButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         returnToCatalogButton.addTarget(self, action: #selector(didTapReturnToCatalogButton), for: .touchUpInside)
         returnToCatalogButton.layer.cornerRadius = 16
@@ -67,7 +67,7 @@ final class SuccessfulPaymentViewController: UIViewController {
         
         greetingLabel.text = L10n.SuccessfulPayment.greeting
         greetingLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        greetingLabel.textColor = UIColor(resource: .ypBlack)
+        greetingLabel.textColor = Asset.ypBlack.color
         greetingLabel.numberOfLines = 2
         greetingLabel.textAlignment = .center
         

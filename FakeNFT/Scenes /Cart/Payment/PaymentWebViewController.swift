@@ -13,7 +13,7 @@ final class PaymentWebViewController: UIViewController, WKNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(resource: .ypWhite)
+        view.backgroundColor = Asset.ypWhite.color
         webView.navigationDelegate = self
         setupNavigationItem()
         setupWebViewController()
@@ -38,7 +38,7 @@ final class PaymentWebViewController: UIViewController, WKNavigationDelegate {
         let backButton = UIButton(type: .custom)
         backButton.setImage(UIImage(resource: .backward), for: .normal)
         backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
-        backButton.tintColor = UIColor(resource: .ypBlack)
+        backButton.tintColor = Asset.ypBlack.color
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     

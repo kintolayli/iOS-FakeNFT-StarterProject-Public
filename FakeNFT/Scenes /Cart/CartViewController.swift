@@ -14,7 +14,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
         presenter.viewController = self
-        view.backgroundColor = UIColor(resource: .ypWhite)
+        view.backgroundColor = Asset.ypWhite.color
     }
 
     required init?(coder: NSCoder) {
@@ -48,7 +48,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private func setupNavigationItem() {
         let sortButton = UIButton(type: .custom)
         sortButton.setImage(UIImage(resource: .sort), for: .normal)
-        sortButton.tintColor = UIColor(resource: .ypBlack)
+        sortButton.tintColor = Asset.ypBlack.color
         sortButton.addTarget(self, action: #selector(didTapSortButton), for: .touchUpInside)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: sortButton)
@@ -67,7 +67,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private func setupPlugLabel() {
         plugLabel.text = L10n.Cart.plug
         plugLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        plugLabel.textColor = UIColor(resource: .ypBlack)
+        plugLabel.textColor = Asset.ypBlack.color
         plugLabel.textAlignment = .center
         
         plugLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -84,7 +84,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private func setupCartTableView() {
         cartTableView.register(CartTableViewCell.self, forCellReuseIdentifier: CartTableViewCell.identifier)
         cartTableView.dataSource = self
-        cartTableView.backgroundColor = UIColor(resource: .ypWhite)
+        cartTableView.backgroundColor = Asset.ypWhite.color
         cartTableView.allowsSelection = false
         cartTableView.separatorStyle = .none
         cartTableView.rowHeight = 140
@@ -108,18 +108,18 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     private func setupOrderDetailsView() {
-        orderDatailsView.backgroundColor = UIColor(resource: .ypLightGrey)
+        orderDatailsView.backgroundColor = Asset.ypLightGrey.color
                 
         totalCostLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        totalCostLabel.textColor = UIColor(resource: .ypGreen)
+        totalCostLabel.textColor = Asset.ypGreen.color
         
         itemCounterLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        itemCounterLabel.textColor = UIColor(resource: .ypBlack)
+        itemCounterLabel.textColor = Asset.ypBlack.color
         
         proceedPaymentButton.setTitle(L10n.Cart.payment, for: .normal)
-        proceedPaymentButton.setTitleColor(UIColor(resource: .ypWhite), for: .normal)
+        proceedPaymentButton.setTitleColor(Asset.ypWhite.color, for: .normal)
         proceedPaymentButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        proceedPaymentButton.backgroundColor = UIColor(resource: .ypBlack)
+        proceedPaymentButton.backgroundColor = Asset.ypBlack.color
         proceedPaymentButton.layer.cornerRadius = 16
         proceedPaymentButton.clipsToBounds = true
         proceedPaymentButton.addTarget(self, action: #selector(didTapProceedPaymentButton), for: .touchUpInside)
