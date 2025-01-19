@@ -24,27 +24,26 @@ protocol NFTCollectionPresenterProtocol: AnyObject {
     func loadNFTsInCart()
     
     func sendLike(nftId: UUID, completion: @escaping (Bool) -> Void)
-    func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void)
+    func sendNFTToCart(nft: NftModel, completion: @escaping (Bool) -> Void)
 }
 
 final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
     private let nftCollectionService: NFTCollectionService
     private let likeService: NFTLikeService
-    private let cartService: NFTCartService
+    private let cartService = CartService.shared
     private let currentCollection: NFTCollectionModel
     private var nfts: [NftModel] = []
     private var likes: [UUID] = []
     private var nftsInCart: [UUID] = []
     private var isLoading: Bool
     private var profileId = 1
-    
+
     weak var viewController: NFTCollectionViewControllerProtocol?
     
     init(currentCollection: NFTCollectionModel) {
         self.currentCollection = currentCollection
         self.nftCollectionService = NFTCollectionService.shared
         self.likeService = NFTLikeService.shared
-        self.cartService = NFTCartService.shared
         self.isLoading = UIBlockingProgressHUD.status()
     }
     
@@ -90,44 +89,25 @@ final class NFTCollectionPresenter: NFTCollectionPresenterProtocol {
     }
     
     func loadNFTsInCart() {
-        cartService.fetchNFTInCart(profileId: profileId) { [ weak self ] result in
-            switch result {
-            case .success(let nfts):
-                self?.nftsInCart = nfts
-                self?.viewController?.updateView()
-                self?.viewController?.reloadData()
-            case .failure(_):
-                let alertModel = AlertModel(
-                    title: L10n.Error.title,
-                    message: L10n.Error.loadingCartError,
-                    actions: [
-                        AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
-                    ]
-                )
-                self?.viewController?.showAlert(with: alertModel)
-            }
-        }
+        nftsInCart = cartService.getOnlyItemsId().compactMap{UUID(uuidString: $0)}
+        viewController?.updateView()
+        viewController?.reloadData()
     }
-    
-    func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void) {
-        cartService.sendNFTToCart(profileId: profileId, nftId: nftId) { [ weak self ] result in
-            switch result {
-            case .success(_):
-                self?.loadNFTsInCart()
-                completion(true)
-                
-            case .failure(_):
-                let alertModel = AlertModel(
-                    title: L10n.Error.title,
-                    message: L10n.Error.loadingLikeError,
-                    actions: [
-                        AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
-                    ]
-                )
-                self?.viewController?.showAlert(with: alertModel)
-                completion(true)
-            }
+
+    func sendNFTToCart(nft: NftModel, completion: @escaping (Bool) -> Void) {
+
+        let itemImageUrl = nft.images[0].absoluteString
+        let itemId = nft.id.uuidString.lowercased()
+        let cartItem = CartItem(nftId: itemId, name: nft.name, rating: nft.rating, price: Float(nft.price), imageUrl: itemImageUrl)
+
+        if cartService.checkItemInCartByNftId(itemId) {
+            cartService.removeItemByNftId(itemId)
+        } else {
+            cartService.addItem(cartItem)
         }
+
+        loadNFTsInCart()
+        completion(true)
     }
     
     func loadNfts(nftIds: [UUID]) {

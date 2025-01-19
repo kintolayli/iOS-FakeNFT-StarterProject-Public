@@ -39,11 +39,10 @@ final class TabBarController: UITabBarController {
         )
         catalogController.view.backgroundColor = .systemBackground
         catalogController.tabBarItem = catalogTabBarItem
-
-        let cartController = TestCartViewController(
-            servicesAssembly: servicesAssembly
-        )
-        cartController.view.backgroundColor = .systemBackground
+        
+        let cartPresenter = CartPresenter(cartService: CartService.shared)
+        let cartController = CartViewController(presenter: cartPresenter)
+        let cartNavigationColntroller = UINavigationController(rootViewController: cartController)
         cartController.tabBarItem = cartTabBarItem
 
         let statisticsController = TestStatisticsViewController(
@@ -55,7 +54,7 @@ final class TabBarController: UITabBarController {
         viewControllers = [
             profileNavigationController,
             UINavigationController(rootViewController: catalogController),
-            cartController,
+            cartNavigationColntroller,
             statisticsController]
 
         view.backgroundColor = .systemBackground

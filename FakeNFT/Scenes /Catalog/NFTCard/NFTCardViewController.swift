@@ -225,10 +225,21 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
         return collectionView
     }()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         loadInitialData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.loadNFTsInCart() { _ in
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.collectionViewBottom.reloadData()
+                self.updateAddToCardButtonPrimary()
+            }
+        }
     }
     
     private func loadInitialData() {
@@ -620,10 +631,10 @@ extension NFTCardViewController {
         UIBlockingProgressHUD.show()
         startAnimatingButton(addToCartButtonPrimary)
         
-        let nftId = presenter.getCurrentNFT().id
+        let nft = presenter.getCurrentNFT()
         
-        presenter.sendNFTToCart(nftId: nftId) { result in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        presenter.sendNFTToCart(nft: nft) { result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 UIBlockingProgressHUD.dismiss()
                 self.stopAnimatingButton(self.addToCartButtonPrimary)
                 self.updateAddToCardButtonPrimary()
@@ -704,10 +715,10 @@ extension NFTCardViewController {
         cell.animateCartButton()
 
         guard let indexPath = collectionViewBottom.indexPath(for: cell)  else { return }
-        let nftId = presenter.getNft(indexPath: indexPath).id
+        let nft = presenter.getNft(indexPath: indexPath)
 
-        presenter.sendNFTToCart(nftId: nftId) { result in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        presenter.sendNFTToCart(nft: nft) { result in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 cell.removeAnimateCartButton()
                 self.collectionViewBottom.reloadData()
                 self.updateAddToCardButtonPrimary()

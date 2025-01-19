@@ -403,9 +403,9 @@ extension NFTCollectionViewController {
         cell.animateCartButton()
 
         guard let indexPath = collectionView.indexPath(for: cell)  else { return }
-        let nftId = presenter.getNft(indexPath: indexPath).id
+        let nft = presenter.getNft(indexPath: indexPath)
 
-        presenter.sendNFTToCart(nftId: nftId) { result in
+        presenter.sendNFTToCart(nft: nft) { result in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 cell.removeAnimateCartButton()
                 UIBlockingProgressHUD.dismiss()

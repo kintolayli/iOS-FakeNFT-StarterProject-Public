@@ -14,22 +14,23 @@ protocol NFTCardPresenterProtocol: AnyObject {
     func getNft(indexPath: IndexPath) -> NftModel
     func getNfts() -> [NftModel]
     func getCellData() -> (likes: [UUID], nftsInCart: [UUID])
-    
+        
     func getCryptoCurrencies() -> [CryptoCurrencyModel]
     func getCryptoCurrency(indexPath: IndexPath) -> CryptoCurrencyModel
     func getСurrentCurrencyPrice(id: Int) -> Double
     func calculatePriceInOtherCurrency(priceInEth: Double, currencyId: Int) -> Double
     
+    func loadNFTsInCart(completion: @escaping (Bool) -> Void)
     func loadInitialData(completion: @escaping (Bool) -> Void)
     func getLoadingStatus() -> Bool
     
     func sendLike(nftId: UUID, completion: @escaping (Bool) -> Void)
-    func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void)
+    func sendNFTToCart(nft: NftModel, completion: @escaping (Bool) -> Void)
 }
 
 final class NFTCardPresenter: NFTCardPresenterProtocol {
     private let likeService: NFTLikeService
-    private let cartService: NFTCartService
+    private let cartService = CartService.shared
     private let cryptoCurrenciesService: NFTCryptoCurrenciesService
     private let currentCollectionTitle: String
     private let currentNFT: NftModel
@@ -47,7 +48,6 @@ final class NFTCardPresenter: NFTCardPresenterProtocol {
         self.currentNFT = currentNFT
         self.currentCollectionTitle = currentCollectionTitle
         self.likeService = NFTLikeService.shared
-        self.cartService = NFTCartService.shared
         self.cryptoCurrenciesService = NFTCryptoCurrenciesService.shared
         self.isLoading = UIBlockingProgressHUD.status()
         self.nfts = nfts
@@ -115,44 +115,23 @@ final class NFTCardPresenter: NFTCardPresenterProtocol {
     }
     
     func loadNFTsInCart(completion: @escaping (Bool) -> Void) {
-        cartService.fetchNFTInCart(profileId: profileId) { [ weak self ] result in
-            switch result {
-            case .success(let nfts):
-                self?.nftsInCart = nfts
-                completion(true)
-                
-            case .failure(_):
-                let alertModel = AlertModel(
-                    title: L10n.Error.title,
-                    message: L10n.Error.loadingCartError,
-                    actions: [
-                        AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
-                    ]
-                )
-                self?.viewController?.showAlert(with: alertModel)
-            }
-        }
+        nftsInCart = cartService.getOnlyItemsId().compactMap{UUID(uuidString: $0)}
+        completion(true)
     }
     
-    func sendNFTToCart(nftId: UUID, completion: @escaping (Bool) -> Void) {
-        cartService.sendNFTToCart(profileId: profileId, nftId: nftId) { [ weak self ] result in
-            switch result {
-            case .success(_):
-                self?.loadNFTsInCart { _ in
-                    completion(true)
-                }
-                
-            case .failure(_):
-                let alertModel = AlertModel(
-                    title: L10n.Error.title,
-                    message: L10n.Error.loadingLikeError,
-                    actions: [
-                        AlertActionModel(title: L10n.Alert.ok, style: .cancel, handler: nil)
-                    ]
-                )
-                self?.viewController?.showAlert(with: alertModel)
-                completion(true)
-            }
+    func sendNFTToCart(nft: NftModel, completion: @escaping (Bool) -> Void) {
+        let itemImageUrl = nft.images[0].absoluteString
+        let itemId = nft.id.uuidString.lowercased()
+        let cartItem = CartItem(nftId: itemId, name: nft.name, rating: nft.rating, price: Float(nft.price), imageUrl: itemImageUrl)
+
+        if cartService.checkItemInCartByNftId(itemId) {
+            cartService.removeItemByNftId(itemId)
+        } else {
+            cartService.addItem(cartItem)
+        }
+
+        loadNFTsInCart { _ in
+            completion(true)
         }
     }
     

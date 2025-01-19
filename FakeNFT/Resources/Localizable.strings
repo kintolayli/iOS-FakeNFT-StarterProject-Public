@@ -62,15 +62,29 @@
 
 // MARK: - Cart
 
-"Cart.forPay.button" = "К оплате";
-"Cart.allert" = "Вы уверены, что хотите\n удалить объект из корзины?";
-"Cart.title" = "Выберите способ оплаты";
-"Cart.agree.description" = "Совершая покупку, вы соглашаетесь с условиями";
-"Cart.user.agree" = "Пользовательского соглашения";
-"Cart.success.placeholder" = "Успех! Оплата прошла,\n поздравляем с покупкой!";
-"Cart.back.button" = "Вернуться в каталог";
-"Cart.payError.alert" = "Не удалось произвести оплату";
-"Cart.empty.placeholder" = "Корзина пуста";
+"Cart.payment" = "К оплате";
+"Cart.delete" = "Удалить";
+"Cart.return" = "Вернуться";
+"Cart.confirmation" = "Вы уверены, что хотите удалить объект из корзины?";
+"Cart.plug" = "Корзина пуста";
+"Cart.sortingAlertMessage" = "Сортировка";
+"Cart.sortingByPrice" = "По цене";
+"Cart.sortingByTitle" = "По названию";
+"Cart.sortingByRating" = "По рейтингу";
+"Cart.close" = "Закрыть";
+
+// MARK: - Payment
+
+"Payment.pay" = "Оплатить";
+"Payment.agreementLabel" = "Совершая покупку, вы соглашаетесь с условиями";
+"Payment.agreementLinkText" = "Пользовательского соглашения";
+"Payment.navBarTitle" = "Выберите способ оплаты";
+"Payment.paymentAlertTitle" = "Не удалось произвести оплату";
+"Payment.currenciesAlertTitle" = "Не удалось получить список валют";
+"Payment.alertCancel" = "Отмена";
+"Payment.alertRetry" = "Повторить";
+"SuccessfulPayment.returnToCatalogTab" = "Вернуться в каталог";
+"SuccessfulPayment.greeting" = "Успех! Оплата прошла, поздравляем с покупкой!";
 
 // MARK: - Profile
 
