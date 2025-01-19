@@ -225,10 +225,21 @@ class NFTCardViewController: UIViewController, NFTCollectionViewControllerProtoc
         return collectionView
     }()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         loadInitialData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter.loadNFTsInCart() { _ in
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.collectionViewBottom.reloadData()
+                self.updateAddToCardButtonPrimary()
+            }
+        }
     }
     
     private func loadInitialData() {

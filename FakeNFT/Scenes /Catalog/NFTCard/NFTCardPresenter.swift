@@ -14,12 +14,13 @@ protocol NFTCardPresenterProtocol: AnyObject {
     func getNft(indexPath: IndexPath) -> NftModel
     func getNfts() -> [NftModel]
     func getCellData() -> (likes: [UUID], nftsInCart: [UUID])
-    
+        
     func getCryptoCurrencies() -> [CryptoCurrencyModel]
     func getCryptoCurrency(indexPath: IndexPath) -> CryptoCurrencyModel
     func getСurrentCurrencyPrice(id: Int) -> Double
     func calculatePriceInOtherCurrency(priceInEth: Double, currencyId: Int) -> Double
     
+    func loadNFTsInCart(completion: @escaping (Bool) -> Void)
     func loadInitialData(completion: @escaping (Bool) -> Void)
     func getLoadingStatus() -> Bool
     
