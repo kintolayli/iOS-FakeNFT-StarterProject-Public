@@ -28,8 +28,10 @@ struct UpdateProfileDto: Dto {
         if let website {
             dict["website"] = website
         }
-        if let likes, !likes.isEmpty {
+        if let likes {
             dict["likes"] = likes.joined(separator: ",")
+        } else {
+            dict["likes"] = "null"
         }
         return dict
     }
