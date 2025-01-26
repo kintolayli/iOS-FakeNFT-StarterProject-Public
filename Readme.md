@@ -1,8 +1,25 @@
 # ТЗ мобильного приложения FakeNFT
 
-# Ссылки
+# Требуемое окружение 
+
+- Xcode 16.1
+- CocoaPods 1.16.2
+
+# Запуск приложения
+
+1. Выполнить в папке проекта `pod install`
+2. Запустить FakeNFT.xcworkspace
+
+# Ссылка на Дизайн Figma
 
 [Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
+
+# Ссылки на скрин-касты
+[Скрин-каст Эпик Профиль](https://disk.yandex.ru/i/-1hOmuLBzCjpiA)
+
+[Скрин-каст Эпик Каталог](https://disk.yandex.ru/i/X8E7pYs8bUcJIw)
+
+[Скрин-каст Эпик Корзина](https://disk.yandex.ru/i/lfEZ5uVI5p83Lg)
 
 # Назначение и цели приложения
 
